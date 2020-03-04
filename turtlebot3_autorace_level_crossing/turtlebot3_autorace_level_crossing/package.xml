@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>turtlebot3_autorace_level_crossing</name>
+  <version>1.0.0</version>
+  <description>
+    AutoRace ROS packages for AutoRace with TurtleBot3 (meta package)
+  </description>
+  <license>Apache 2.0</license>
+  <author email="ashe@robotis.com">Ashe</author>
+  <author>Ashe Kim</author>
+  <maintainer email="ashe@robotis.com">Ashe</maintainer>
+  <maintainer email="willson@robotis.com">Will Son</maintainer>
+  <url type="website">http://wiki.ros.org/turtlebot3_autorace</url>
+  <url type="emanual">http://turtlebot3.robotis.com</url>
+  <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_autorace_2020</url>
+  <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_autorace_2020/issues</url>
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>turtlebot3_autorace_level_crossing_camera</exec_depend>
+  <exec_depend>turtlebot3_autorace_level_crossing_control</exec_depend>
+  <exec_depend>turtlebot3_autorace_level_crossing_core</exec_depend>
+  <exec_depend>turtlebot3_autorace_level_crossing_detect</exec_depend>
+  <export><metapackage/></export>
+</package>
