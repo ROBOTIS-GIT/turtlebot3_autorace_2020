@@ -18,7 +18,7 @@
   <exec_depend>turtlebot3_autorace_construction</exec_depend>
   <exec_depend>turtlebot3_autorace_intersection</exec_depend>
   <exec_depend>turtlebot3_autorace_parking</exec_depend>
-  <exec_depend>turtlebot3_autorace_level_crossing</exec_depend>
+  <exec_depend>turtlebot3_autorace_stop_bar</exec_depend>
   <exec_depend>turtlebot3_autorace_traffic_light</exec_depend>
   <exec_depend>turtlebot3_autorace_tunnel</exec_depend>
   <export><metapackage/></export>
