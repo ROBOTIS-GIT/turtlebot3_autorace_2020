@@ -6,9 +6,9 @@
     AutoRace ROS packages for feature detection with TurtleBot3 Auto
   </description>
   <license>Apache 2.0</license>
-  <author email="ashe@robotis.com">Ashe</author>
+  <author email="ashekim@robotis.com">Ashe</author>
   <author>Ashe Kim</author>
-  <maintainer email="ashe@robotis.com">Ashe</maintainer>
+  <maintainer email="ashekim@robotis.com">Ashe</maintainer>
   <maintainer email="willson@robotis.com">Will Son</maintainer>
   <url type="website">http://wiki.ros.org/turtlebot3_autorace</url>
   <url type="emanual">http://turtlebot3.robotis.com</url>
