@@ -1,4 +1,4 @@
-# TurtleBot3 AutoRace 2020 metapackage
+# TurtleBot3 AutoRace 2020 : Traffic Light Mission metapackage
 
 ## TurtleBot3
 <img src="https://github.com/ROBOTIS-GIT/emanual/blob/master/assets/images/platform/turtlebot3/logo_turtlebot3.png" width="300">

@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="turtlebot3_autorace_traffic_light_control" type="control_moving" name="control_moving" output="screen">
+  </node>
+</launch>

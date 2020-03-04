@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="turtlebot3_autorace_parking_control" type="control_moving" name="control_moving" output="screen">
+  </node>
+</launch>
