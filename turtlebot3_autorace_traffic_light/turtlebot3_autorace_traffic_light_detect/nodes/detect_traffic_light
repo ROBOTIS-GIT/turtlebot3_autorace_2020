@@ -27,7 +27,7 @@ from std_msgs.msg import UInt8, Float64
 from sensor_msgs.msg import Image, CompressedImage
 from cv_bridge import CvBridge, CvBridgeError
 from dynamic_reconfigure.server import Server
-from turtlebot3_autorace_detect.cfg import DetectTrafficLightParamsConfig
+from turtlebot3_autorace_traffic_light_detect.cfg import DetectTrafficLightParamsConfig
 
 class DetectTrafficLight():
     def __init__(self):
