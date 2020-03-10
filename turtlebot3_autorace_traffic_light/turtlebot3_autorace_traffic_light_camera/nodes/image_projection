@@ -25,7 +25,7 @@ import cv2
 from sensor_msgs.msg import Image, CompressedImage
 from cv_bridge import CvBridge
 from dynamic_reconfigure.server import Server
-from turtlebot3_autorace_camera.cfg import ImageProjectionParamsConfig
+from turtlebot3_autorace_traffic_light_camera.cfg import ImageProjectionParamsConfig
 
 class ImageProjection():
     def __init__(self):
