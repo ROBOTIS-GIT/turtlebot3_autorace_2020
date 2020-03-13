@@ -30,7 +30,7 @@ from std_msgs.msg import UInt8, Float64, String
 from sensor_msgs.msg import LaserScan, Image, CompressedImage
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
-from turtlebot3_msgs.msg import movingParam
+from turtlebot3_autorace_msgs.msg import MovingParam
 
 class DetectContruction():
     def __init__(self):
@@ -41,7 +41,7 @@ class DetectContruction():
         self.sub_moving_completed = rospy.Subscriber('/control/moving/complete', UInt8, self.cbMovingComplete, queue_size = 1)
         self.pub_construction_return = rospy.Publisher('/detect/construction_stamped', UInt8, queue_size=1)
         self.pub_construction_start = rospy.Publisher('/control/construction_start', UInt8, queue_size = 1)
-        self.pub_moving = rospy.Publisher('/control/moving/state', movingParam, queue_size= 1)
+        self.pub_moving = rospy.Publisher('/control/moving/state', MovingParam, queue_size= 1)
         self.pub_max_vel = rospy.Publisher('/control/max_vel', Float64, queue_size = 1)
         self.pub_timer_start = rospy.Publisher('/detect/timer/start', Float64, queue_size= 1)
        
@@ -86,7 +86,7 @@ class DetectContruction():
             rospy.sleep(3)
 
             rospy.loginfo("doing motion_lf")
-            msg_moving = movingParam()
+            msg_moving = MovingParam()
             msg_moving.moving_type=2
             msg_moving.moving_value_angular=80
             msg_moving.moving_value_linear=0.0

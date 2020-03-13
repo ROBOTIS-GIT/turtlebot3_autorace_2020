@@ -11,11 +11,11 @@ from std_msgs.msg import UInt8, Float64
 from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
-from turtlebot3_msgs.msg import movingParam
+from turtlebot3_autorace_msgs.msg import MovingParam
 
 class ControlMoving():
     def __init__(self):
-        self.sub_moving_state = rospy.Subscriber('/control/moving/state', movingParam, self.get_param, queue_size = 1)
+        self.sub_moving_state = rospy.Subscriber('/control/moving/state', MovingParam, self.get_param, queue_size = 1)
         self.sub_odom = rospy.Subscriber('/odom', Odometry, self.cbOdom, queue_size=1)
 
         self.pub_cmd_vel = rospy.Publisher('/cmd_vel', Twist, queue_size = 1)
@@ -33,7 +33,7 @@ class ControlMoving():
         self.moving_type = UInt8()
         self.moving_angluar = 0.0
         self.moving_linear = 0.0
-        self.moving_msg = movingParam()
+        self.moving_msg = MovingParam()
 
         #moving flags
         self.is_step_start = False

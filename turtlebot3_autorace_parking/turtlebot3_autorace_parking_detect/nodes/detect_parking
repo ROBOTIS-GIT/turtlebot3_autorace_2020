@@ -31,7 +31,7 @@ from sensor_msgs.msg import LaserScan, Image, CompressedImage
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 from cv_bridge import CvBridge, CvBridgeError
-from turtlebot3_msgs.msg import movingParam
+from turtlebot3_autorace_msgs.msg import MovingParam
 
 class DetectParking():
     def __init__(self):
@@ -43,7 +43,7 @@ class DetectParking():
         self.sub_scan_obstacle = rospy.Subscriber('/detect/scan', LaserScan, self.cbScanObstacle, queue_size=1)
         self.sub_parking_finished = rospy.Subscriber('/control/parking_finished', UInt8, self.cbParkingFinished, queue_size = 1)
         self.sub_moving_completed = rospy.Subscriber('/control/moving/complete', UInt8, self.cbMovingComplete, queue_size = 1)
-        self.pub_moving = rospy.Publisher('/control/moving/state', movingParam, queue_size= 1)
+        self.pub_moving = rospy.Publisher('/control/moving/state', MovingParam, queue_size= 1)
 
         if self.sub_image_type == "compressed":
             # subscribes compressed image
@@ -130,7 +130,7 @@ class DetectParking():
             rospy.sleep(1)
 
             rospy.loginfo("doing motion_str")
-            msg_moving = movingParam()
+            msg_moving = MovingParam()
             msg_moving.moving_type= 4
             msg_moving.moving_value_angular=0.0
             msg_moving.moving_value_linear=0.7
@@ -143,7 +143,7 @@ class DetectParking():
             rospy.sleep(1)
 
             rospy.loginfo("doing motion_lf")
-            msg_moving = movingParam()
+            msg_moving = MovingParam()
             msg_moving.moving_type=2
             msg_moving.moving_value_angular=90
             msg_moving.moving_value_linear=0.0
@@ -176,7 +176,7 @@ class DetectParking():
             
             if self.is_obstacle_detected_R == False:
                 rospy.loginfo("right parking lot is clear")
-                msg_moving = movingParam()
+                msg_moving = MovingParam()
                 msg_moving.moving_type=3
                 msg_moving.moving_value_angular=90
                 msg_moving.moving_value_linear=0.0
@@ -244,7 +244,7 @@ class DetectParking():
 
                 rospy.sleep(1)   
 
-                msg_moving = movingParam()
+                msg_moving = MovingParam()
                 msg_moving.moving_type=2
                 msg_moving.moving_value_angular=90
                 msg_moving.moving_value_linear=0.0
@@ -259,7 +259,7 @@ class DetectParking():
             
             elif self.is_obstacle_detected_L == False:
                 rospy.loginfo("left parking lot is clear")
-                msg_moving = movingParam()
+                msg_moving = MovingParam()
                 msg_moving.moving_type=2
                 msg_moving.moving_value_angular=85
                 msg_moving.moving_value_linear=0.0
@@ -325,7 +325,7 @@ class DetectParking():
 
                 rospy.sleep(1)
 
-                msg_moving = movingParam()
+                msg_moving = MovingParam()
                 msg_moving.moving_type=2
                 msg_moving.moving_value_angular=90
                 msg_moving.moving_value_linear=0.0
