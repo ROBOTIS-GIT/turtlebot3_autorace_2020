@@ -55,8 +55,8 @@ class CoreNodeController():
         
         self.launch_camera_launched = False
         self.launch_detect_lane_launched = False    
-        self.launch_control_lane_launched = False
         self.launch_detect_traffic_light_launched = False
+        self.launch_control_lane_launched = False
         self.launch_control_moving_launched = False
 
         self.current_mode = self.CurrentMode.idle.value
@@ -85,18 +85,10 @@ class CoreNodeController():
             self.fnLaunch(self.Launcher.launch_camera_ex_calib.value, True)
 
             self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
-            self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
             self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
 
-            self.fnLaunch(self.Launcher.launch_detect_parking.value, False)
-            self.fnLaunch(self.Launcher.launch_detect_level.value, False)
-            self.fnLaunch(self.Launcher.launch_detect_tunnel.value, False)
-            self.fnLaunch(self.Launcher.launch_detect_construction.value, True)
-
-            self.fnLaunch(self.Launcher.launch_control_moving.value, True)
             self.fnLaunch(self.Launcher.launch_control_lane.value, True)
-            self.fnLaunch(self.Launcher.launch_control_parking.value, False)
-            self.fnLaunch(self.Launcher.launch_control_tunnel.value, False)
+            self.fnLaunch(self.Launcher.launch_control_moving.value, True)
 
         # traffic_light
         elif self.current_mode == self.CurrentMode.traffic_light.value:
@@ -112,33 +104,21 @@ class CoreNodeController():
                 self.fnLaunch(self.Launcher.launch_camera_ex_calib.value, True)
                 
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
                 self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_parking.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_level.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_tunnel.value, False)
                 
-                self.fnLaunch(self.Launcher.launch_control_moving.value, True)
                 self.fnLaunch(self.Launcher.launch_control_lane.value, False)
-                self.fnLaunch(self.Launcher.launch_control_parking.value, False)
-                self.fnLaunch(self.Launcher.launch_control_level.value, False)
+                self.fnLaunch(self.Launcher.launch_control_moving.value, True)
 
             elif self.current_step_traffic_light == self.StepOfTrafficLight.in_traffic_light.value:
                 rospy.loginfo("Current step : in_traffic_light")
                 rospy.loginfo("Go to next step : pass_traffic_light")
 
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
                 self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_parking.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_level.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_tunnel.value, False)
 
-                self.fnLaunch(self.Launcher.launch_control_moving.value, True)
                 self.fnLaunch(self.Launcher.launch_control_lane.value, False)
-                self.fnLaunch(self.Launcher.launch_control_parking.value, False)
-                self.fnLaunch(self.Launcher.launch_control_level.value, False)
-
+                self.fnLaunch(self.Launcher.launch_control_moving.value, True)
+                
             rospy.sleep(2)
 
             self.pub_traffic_light_order.publish(msg_pub_traffic_light_order)

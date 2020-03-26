@@ -52,18 +52,11 @@ class CoreNodeController():
         self.uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
         
         self.launch_camera_launched = False
-        self.launch_detect_sign_launched = False
         self.launch_detect_lane_launched = False    
-        self.launch_control_lane_launched = False
+        self.launch_detect_sign_launched = False
         self.launch_detect_parking_launched = False
+        self.launch_control_lane_launched = False
         self.launch_control_parking_launched = False
-        self.launch_detect_level_launched = False
-        self.launch_detect_traffic_light_launched = False
-        self.launch_detect_tunnel_launched = False
-        self.launch_control_tunnel_launched = False
-        self.launch_detect_construction_launched = False
-        self.launch_go_right_launched = False
-        self.launch_control_construction_launched = False
         self.launch_control_moving_launched = False
 
 
@@ -113,17 +106,11 @@ class CoreNodeController():
 
             self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
             self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
-            self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
-
             self.fnLaunch(self.Launcher.launch_detect_parking.value, False)
-            self.fnLaunch(self.Launcher.launch_detect_level.value, False)
-            self.fnLaunch(self.Launcher.launch_detect_tunnel.value, False)
 
-            self.fnLaunch(self.Launcher.launch_control_moving.value, True)
             self.fnLaunch(self.Launcher.launch_control_lane.value, True)
+            self.fnLaunch(self.Launcher.launch_control_moving.value, True)
             self.fnLaunch(self.Launcher.launch_control_parking.value, False)
-            self.fnLaunch(self.Launcher.launch_control_tunnel.value, False)
-
 
         # parking_lot
         elif self.current_mode == self.CurrentMode.parking_lot.value:
@@ -136,14 +123,13 @@ class CoreNodeController():
 
                 msg_pub_parking_lot_order.data = self.StepOfParkingLot.searching_parking_point_line.value
 
+                self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
+                self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
+                self.fnLaunch(self.Launcher.launch_detect_parking.value, True)
+
                 self.fnLaunch(self.Launcher.launch_control_lane.value, False)
                 self.fnLaunch(self.Launcher.launch_control_parking.value, False)
                 self.fnLaunch(self.Launcher.launch_control_moving.value, True)
-
-                self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_parking.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
                                    
             elif self.current_step_parking_lot == self.StepOfParkingLot.searching_parking_point_line.value:
                 rospy.loginfo("Current step : searching_parking_point_line")
@@ -151,13 +137,13 @@ class CoreNodeController():
 
                 msg_pub_parking_lot_order.data = self.StepOfParkingLot.searching_nonreserved_parking_area.value
 
-                self.fnLaunch(self.Launcher.launch_control_lane.value, False)
-                self.fnLaunch(self.Launcher.launch_control_parking.value, True)
-
                 self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_detect_parking.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
+
+                self.fnLaunch(self.Launcher.launch_control_lane.value, False)
+                self.fnLaunch(self.Launcher.launch_control_parking.value, True)
+                self.fnLaunch(self.Launcher.launch_control_moving.value, True)
 
             elif self.current_step_parking_lot == self.StepOfParkingLot.searching_nonreserved_parking_area.value:
                 rospy.loginfo("Current step : searching_nonreserved_parking_area")
@@ -165,27 +151,27 @@ class CoreNodeController():
 
                 msg_pub_parking_lot_order.data = self.StepOfParkingLot.parking.value
 
-                self.fnLaunch(self.Launcher.launch_control_lane.value, False)
-                self.fnLaunch(self.Launcher.launch_control_parking.value, True)
-                
                 self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, False)
                 self.fnLaunch(self.Launcher.launch_detect_parking.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
 
+                self.fnLaunch(self.Launcher.launch_control_lane.value, False)
+                self.fnLaunch(self.Launcher.launch_control_parking.value, True)
+                self.fnLaunch(self.Launcher.launch_control_moving.value, True)
+                
             elif self.current_step_parking_lot == self.StepOfParkingLot.parking.value:
                 rospy.loginfo("Current step : parking")
                 rospy.loginfo("Go to next step : searching_parking_sign")
 
                 msg_pub_parking_lot_order.data = self.StepOfParkingLot.searching_parking_sign.value
 
-                self.fnLaunch(self.Launcher.launch_control_parking.value, False)
-                self.fnLaunch(self.Launcher.launch_control_lane.value, True)
-
                 self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_detect_parking.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
+
+                self.fnLaunch(self.Launcher.launch_control_lane.value, True)
+                self.fnLaunch(self.Launcher.launch_control_parking.value, False)
+                self.fnLaunch(self.Launcher.launch_control_moving.value, True)
 
             rospy.sleep(2)
 
@@ -283,83 +269,7 @@ class CoreNodeController():
                     self.launch_control_parking.shutdown()
                 else:
                     pass
-        elif launch_num == self.Launcher.launch_detect_level.value:
-            if is_start == True:
-                if self.launch_detect_level_launched == False:
-                    self.launch_detect_level = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_detect_level = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_parking_detect/launch/turtlebot3_autorace_detect_level.launch"])     
-                    self.launch_detect_level_launched = True
-                    self.launch_detect_level.start()
-                else:
-                    pass
-            else:
-                if self.launch_detect_level_launched == True:
-                    self.launch_detect_level_launched = False
-                    self.launch_detect_level.shutdown()
-                else:
-                    pass                  
-        elif launch_num == self.Launcher.launch_detect_traffic_light.value:
-            if is_start == True:
-                if self.launch_detect_traffic_light_launched == False:
-                    self.launch_detect_traffic_light = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_detect_traffic_light = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_parking_detect/launch/turtlebot3_autorace_detect_traffic_light.launch"])     
-                    self.launch_detect_traffic_light_launched = True
-                    self.launch_detect_traffic_light.start()
-                else:
-                    pass
-            else:
-                if self.launch_detect_traffic_light_launched == True:
-                    self.launch_detect_traffic_light_launched = False
-                    self.launch_detect_traffic_light.shutdown()
-                else:
-                    pass    
-                    
-        elif launch_num == self.Launcher.launch_detect_tunnel.value:
-            if is_start == True:
-                if self.launch_detect_tunnel_launched == False:
-                    self.launch_detect_tunnel = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_detect_tunnel = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_parking_detect/launch/turtlebot3_autorace_detect_tunnel.launch"])     
-                    self.launch_detect_tunnel_launched = True
-                    self.launch_detect_tunnel.start()
-                else:
-                    pass
-            else:
-                if self.launch_detect_tunnel_launched == True:
-                    self.launch_detect_tunnel_launched = False
-                    self.launch_detect_tunnel.shutdown()
-                else:
-                    pass    
-        elif launch_num == self.Launcher.launch_control_tunnel.value:
-            if is_start == True:
-                if self.launch_control_tunnel_launched == False:
-                    self.launch_control_tunnel = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_control_tunnel = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_parking_control/launch/turtlebot3_autorace_control_tunnel.launch"])     
-                    self.launch_control_tunnel_launched = True
-                    self.launch_control_tunnel.start()
-                else:
-                    pass
-            else:
-                if self.launch_control_tunnel_launched == True:
-                    self.launch_control_tunnel_launched = False
-                    self.launch_control_tunnel.shutdown()
-                else:
-                    pass
-
-        elif launch_num == self.Launcher.launch_detect_construction.value:
-            if is_start == True:
-                if self.launch_detect_construction_launched == False:
-                    self.launch_detect_construction = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_detect_construction = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_parking_detect/launch/turtlebot3_autorace_detect_construction.launch"])
-                    self.launch_detect_construction_launched = True
-                    self.launch_detect_construction.start()
-                else:
-                    pass
-            else:
-                if self.launch_detect_construction_launched == True:
-                    self.launch_detect_construction_launched = False
-                    self.launch_detect_construction.shutdown()
-                pass
-
+        
         elif launch_num == self.Launcher.launch_control_moving.value:
             if is_start == True:
                 if self.launch_control_moving_launched == False:
