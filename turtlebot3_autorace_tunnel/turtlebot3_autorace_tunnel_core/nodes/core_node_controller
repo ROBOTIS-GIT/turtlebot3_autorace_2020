@@ -55,17 +55,9 @@ class CoreNodeController():
         self.launch_camera_launched = False
         self.launch_detect_sign_launched = False
         self.launch_detect_lane_launched = False    
-        self.launch_control_lane_launched = False
-        self.launch_detect_parking_launched = False
-        self.launch_control_parking_launched = False
-        self.launch_detect_level_launched = False
-        self.launch_detect_traffic_light_launched = False
         self.launch_detect_tunnel_launched = False
+        self.launch_control_lane_launched = False
         self.launch_control_tunnel_launched = False
-        self.launch_detect_construction_launched = False
-        self.launch_go_right_launched = False
-        self.launch_control_construction_launched = False
-        self.launch_control_moving_launched = False
 
         self.current_mode = self.CurrentMode.idle.value
 
@@ -110,15 +102,9 @@ class CoreNodeController():
 
             self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
             self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
-            self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
-
-            self.fnLaunch(self.Launcher.launch_detect_parking.value, False)
-            self.fnLaunch(self.Launcher.launch_detect_level.value, False)
             self.fnLaunch(self.Launcher.launch_detect_tunnel.value, False)
 
-            self.fnLaunch(self.Launcher.launch_control_moving.value, False)
             self.fnLaunch(self.Launcher.launch_control_lane.value, True)
-            self.fnLaunch(self.Launcher.launch_control_parking.value, False)
             self.fnLaunch(self.Launcher.launch_control_tunnel.value, False)
 
 
@@ -133,14 +119,13 @@ class CoreNodeController():
 
                 msg_pub_tunnel_order.data = self.StepOfTunnel.go_in_to_tunnel.value
 
-                self.fnLaunch(self.Launcher.launch_detect_tunnel.value, True)
-                self.fnLaunch(self.Launcher.launch_control_lane.value, False)
                 self.fnLaunch(self.Launcher.launch_camera_ex_calib.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_lane.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_level.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
 
+                self.fnLaunch(self.Launcher.launch_detect_lane.value, False)
+                self.fnLaunch(self.Launcher.launch_detect_tunnel.value, True)
+                self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
+
+                self.fnLaunch(self.Launcher.launch_control_lane.value, False)
                 self.fnLaunch(self.Launcher.launch_control_tunnel.value, False)
                                    
             elif self.current_step_tunnel == self.StepOfTunnel.go_in_to_tunnel.value:
@@ -150,13 +135,12 @@ class CoreNodeController():
                 msg_pub_tunnel_order.data = self.StepOfTunnel.navigation.value
 
                 self.fnLaunch(self.Launcher.launch_camera_ex_calib.value, False)
-                self.fnLaunch(self.Launcher.launch_control_lane.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_lane.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_level.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_tunnel.value, True)
 
+                self.fnLaunch(self.Launcher.launch_detect_lane.value, False)
+                self.fnLaunch(self.Launcher.launch_detect_tunnel.value, True)
+                self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
+
+                self.fnLaunch(self.Launcher.launch_control_lane.value, False)
                 self.fnLaunch(self.Launcher.launch_control_tunnel.value, True)
 
             elif self.current_step_tunnel == self.StepOfTunnel.navigation.value:
@@ -166,13 +150,12 @@ class CoreNodeController():
                 msg_pub_tunnel_order.data = self.StepOfTunnel.go_out_from_tunnel.value
 
                 self.fnLaunch(self.Launcher.launch_camera_ex_calib.value, True)
-                self.fnLaunch(self.Launcher.launch_control_lane.value, False)
+
                 self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_level.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
                 self.fnLaunch(self.Launcher.launch_detect_tunnel.value, True)
 
+                self.fnLaunch(self.Launcher.launch_control_lane.value, False)
                 self.fnLaunch(self.Launcher.launch_control_tunnel.value, False)
 
             elif self.current_step_tunnel == self.StepOfTunnel.go_out_from_tunnel.value:
@@ -181,14 +164,13 @@ class CoreNodeController():
 
                 msg_pub_tunnel_order.data = self.StepOfTunnel.exit.value
 
-                self.fnLaunch(self.Launcher.launch_detect_tunnel.value, False)
                 self.fnLaunch(self.Launcher.launch_camera_ex_calib.value, True)
+             
+                self.fnLaunch(self.Launcher.launch_detect_tunnel.value, False)
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
+             
                 self.fnLaunch(self.Launcher.launch_control_lane.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_level.value, False)
-
                 self.fnLaunch(self.Launcher.launch_control_tunnel.value, False)
 
             elif self.current_step_tunnel == self.StepOfTunnel.exit.value:
@@ -197,14 +179,13 @@ class CoreNodeController():
 
                 msg_pub_tunnel_order.data = self.StepOfTunnel.searching_tunneROSLaunchParentvalue
 
-                self.fnLaunch(self.Launcher.launch_detect_tunnel.value, False)
                 self.fnLaunch(self.Launcher.launch_camera_ex_calib.value, True)
+
+                self.fnLaunch(self.Launcher.launch_detect_tunnel.value, False)
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
+                
                 self.fnLaunch(self.Launcher.launch_control_lane.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_level.value, False)
-
                 self.fnLaunch(self.Launcher.launch_control_tunnel.value, False)
                 
             rospy.sleep(2)
@@ -274,67 +255,7 @@ class CoreNodeController():
                     self.launch_control_lane.shutdown()
                 else:
                     pass                  
-        elif launch_num == self.Launcher.launch_detect_parking.value:
-            if is_start == True:
-                if self.launch_detect_parking_launched == False:
-                    self.launch_detect_parking = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_detect_parking = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_tunnel_detect/launch/turtlebot3_autorace_detect_parking.launch"])
-                    self.launch_detect_parking_launched = True
-                    self.launch_detect_parking.start()
-                else:
-                    pass
-            else:
-                if self.launch_detect_parking_launched == True:
-                    self.launch_detect_parking_launched = False
-                    self.launch_detect_parking.shutdown()
-                else:
-                    pass                  
-        elif launch_num == self.Launcher.launch_control_parking.value:
-            if is_start == True:
-                if self.launch_control_parking_launched == False:
-                    self.launch_control_parking = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_control_parking = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_tunnel_control/launch/turtlebot3_autorace_control_parking.launch"])     
-                    self.launch_control_parking_launched = True
-                    self.launch_control_parking.start()
-                else:
-                    pass
-            else:
-                if self.launch_control_parking_launched == True:
-                    self.launch_control_parking_launched = False
-                    self.launch_control_parking.shutdown()
-                else:
-                    pass
-        elif launch_num == self.Launcher.launch_detect_level.value:
-            if is_start == True:
-                if self.launch_detect_level_launched == False:
-                    self.launch_detect_level = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_detect_level = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_tunnel_detect/launch/turtlebot3_autorace_detect_level.launch"])     
-                    self.launch_detect_level_launched = True
-                    self.launch_detect_level.start()
-                else:
-                    pass
-            else:
-                if self.launch_detect_level_launched == True:
-                    self.launch_detect_level_launched = False
-                    self.launch_detect_level.shutdown()
-                else:
-                    pass                  
-        elif launch_num == self.Launcher.launch_detect_traffic_light.value:
-            if is_start == True:
-                if self.launch_detect_traffic_light_launched == False:
-                    self.launch_detect_traffic_light = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_detect_traffic_light = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_tunnel_detect/launch/turtlebot3_autorace_detect_traffic_light.launch"])     
-                    self.launch_detect_traffic_light_launched = True
-                    self.launch_detect_traffic_light.start()
-                else:
-                    pass
-            else:
-                if self.launch_detect_traffic_light_launched == True:
-                    self.launch_detect_traffic_light_launched = False
-                    self.launch_detect_traffic_light.shutdown()
-                else:
-                    pass    
-                    
+        
         elif launch_num == self.Launcher.launch_detect_tunnel.value:
             if is_start == True:
                 if self.launch_detect_tunnel_launched == False:
@@ -365,21 +286,6 @@ class CoreNodeController():
                     self.launch_control_tunnel.shutdown()
                 else:
                     pass
-
-        elif launch_num == self.Launcher.launch_control_moving.value:
-            if is_start == True:
-                if self.launch_control_moving_launched == False:
-                    self.launch_control_moving = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_control_moving = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_tunnel_control/launch/turtlebot3_autorace_control_moving.launch"])
-                    self.launch_control_moving_launched = True
-                    self.launch_control_moving.start()
-                else:
-                    pass
-            else:
-                if self.launch_control_moving_launched == True:
-                    self.launch_control_moving_launched = False
-                    self.launch_control_moving.shutdown()
-                pass
 
     def main(self):
         rospy.spin()

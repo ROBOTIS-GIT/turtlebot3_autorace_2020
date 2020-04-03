@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>turtlebot3_autorace_msgs</name>
+  <version>1.0.0</version>
+  <description>The turtlebot3_autorace_msgs package
+  </description>
+  <license>Apache 2.0</license>
+  <author email="ashekim@robotis.com">Ashe</author>
+  <author>Ashe Kim</author>
+  <maintainer email="ashekim@robotis.com">Ashe</maintainer>
+  <maintainer email="willson@robotis.com">Will Son</maintainer>
+  <url type="website">http://wiki.ros.org/turtlebot3_autorace</url>
+  <url type="emanual">http://turtlebot3.robotis.com</url>
+  <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_autorace_2020</url>
+  <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_autorace_2020/issues</url>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>std_msgs</depend>
+  <build_depend>message_generation</build_depend>
+  <build_export_depend>message_runtime</build_export_depend>
+  <exec_depend>message_runtime</exec_depend>
+</package>

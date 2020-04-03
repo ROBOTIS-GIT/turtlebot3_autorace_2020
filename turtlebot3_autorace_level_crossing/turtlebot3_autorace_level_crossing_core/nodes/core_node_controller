@@ -57,16 +57,8 @@ class CoreNodeController():
         self.launch_camera_launched = False
         self.launch_detect_sign_launched = False
         self.launch_detect_lane_launched = False    
-        self.launch_control_lane_launched = False
-        self.launch_detect_parking_launched = False
-        self.launch_control_parking_launched = False
         self.launch_detect_level_launched = False
-        self.launch_detect_traffic_light_launched = False
-        self.launch_detect_tunnel_launched = False
-        self.launch_control_tunnel_launched = False
-        self.launch_detect_construction_launched = False
-        self.launch_go_right_launched = False
-        self.launch_control_construction_launched = False
+        self.launch_control_lane_launched = False
         self.launch_control_moving_launched = False
 
 
@@ -109,15 +101,13 @@ class CoreNodeController():
 
             self.fnLaunch(self.Launcher.launch_camera_ex_calib.value, True)
 
-            self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
-            self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
-
-            self.fnLaunch(self.Launcher.launch_detect_level.value, False)
-
             self.fnLaunch(self.Launcher.launch_control_moving.value, False)
             self.fnLaunch(self.Launcher.launch_control_lane.value, True)
 
-       
+            self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
+            self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
+            self.fnLaunch(self.Launcher.launch_detect_level.value, False)
+     
         # level_crossing
         elif self.current_mode == self.CurrentMode.level_crossing.value:
             rospy.loginfo("New trigger for level_crossing")
@@ -133,8 +123,6 @@ class CoreNodeController():
                 self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
                 self.fnLaunch(self.Launcher.launch_detect_level.value, True)
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
-
                                    
             elif self.current_step_level_crossing == self.StepOfLevelCrossing.go_straight.value:
                 rospy.loginfo("Current step : go straight")
@@ -143,11 +131,11 @@ class CoreNodeController():
                 msg_pub_level_crossing_order.data = self.StepOfLevelCrossing.waiting.value
 
                 self.fnLaunch(self.Launcher.launch_control_lane.value, False)
-                # self.fnLaunch(self.Launcher.launch_control_moving.value, True)
+                self.fnLaunch(self.Launcher.launch_control_moving.value, True)
                 
+                self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, False)
                 self.fnLaunch(self.Launcher.launch_detect_level.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
 
             elif self.current_step_level_crossing == self.StepOfLevelCrossing.waiting.value:
                 rospy.loginfo("Current step : waiting")
@@ -156,10 +144,11 @@ class CoreNodeController():
                 msg_pub_level_crossing_order.data = self.StepOfLevelCrossing.pass_level.value
 
                 self.fnLaunch(self.Launcher.launch_control_lane.value, False)
+                self.fnLaunch(self.Launcher.launch_control_moving.value, True)
+                
                 self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, False)
                 self.fnLaunch(self.Launcher.launch_detect_level.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
 
             elif self.current_step_level_crossing == self.StepOfLevelCrossing.pass_level.value:
                 rospy.loginfo("Current step : pass_level")
@@ -168,11 +157,11 @@ class CoreNodeController():
                 msg_pub_level_crossing_order.data = self.StepOfLevelCrossing.searching_stop_sign.value
 
                 self.fnLaunch(self.Launcher.launch_control_lane.value, True)
+                self.fnLaunch(self.Launcher.launch_control_moving.value, False)
 
-                self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_level.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
+                self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
+                self.fnLaunch(self.Launcher.launch_detect_level.value, False)
 
             rospy.sleep(2)
 
@@ -195,6 +184,7 @@ class CoreNodeController():
                     self.launch_camera.shutdown()
                 else:
                     pass
+
         elif launch_num == self.Launcher.launch_detect_sign.value:
             if is_start == True:
                 if self.launch_detect_sign_launched == False:
@@ -209,7 +199,8 @@ class CoreNodeController():
                     self.launch_detect_sign_launched = False
                     self.launch_detect_sign.shutdown()
                 else:
-                    pass                
+                    pass
+
         elif launch_num == self.Launcher.launch_detect_lane.value:
             if is_start == True:
                 if self.launch_detect_lane_launched == False:
@@ -224,7 +215,8 @@ class CoreNodeController():
                     self.launch_detect_lane_launched = False
                     self.launch_detect_lane.shutdown()
                 else:
-                    pass                  
+                    pass  
+                                
         elif launch_num == self.Launcher.launch_control_lane.value:
             if is_start == True:
                 if self.launch_control_lane_launched == False:
@@ -240,36 +232,7 @@ class CoreNodeController():
                     self.launch_control_lane.shutdown()
                 else:
                     pass                  
-        elif launch_num == self.Launcher.launch_detect_parking.value:
-            if is_start == True:
-                if self.launch_detect_parking_launched == False:
-                    self.launch_detect_parking = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_detect_parking = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_level_crossing_detect/launch/turtlebot3_autorace_detect_parking.launch"])
-                    self.launch_detect_parking_launched = True
-                    self.launch_detect_parking.start()
-                else:
-                    pass
-            else:
-                if self.launch_detect_parking_launched == True:
-                    self.launch_detect_parking_launched = False
-                    self.launch_detect_parking.shutdown()
-                else:
-                    pass                  
-        elif launch_num == self.Launcher.launch_control_parking.value:
-            if is_start == True:
-                if self.launch_control_parking_launched == False:
-                    self.launch_control_parking = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_control_parking = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_level_crossing_control/launch/turtlebot3_autorace_control_parking.launch"])     
-                    self.launch_control_parking_launched = True
-                    self.launch_control_parking.start()
-                else:
-                    pass
-            else:
-                if self.launch_control_parking_launched == True:
-                    self.launch_control_parking_launched = False
-                    self.launch_control_parking.shutdown()
-                else:
-                    pass
+       
         elif launch_num == self.Launcher.launch_detect_level.value:
             if is_start == True:
                 if self.launch_detect_level_launched == False:
@@ -284,37 +247,17 @@ class CoreNodeController():
                     self.launch_detect_level_launched = False
                     self.launch_detect_level.shutdown()
                 else:
-                    pass                  
-        elif launch_num == self.Launcher.launch_detect_traffic_light.value:
-            if is_start == True:
-                if self.launch_detect_traffic_light_launched == False:
-                    self.launch_detect_traffic_light = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_detect_traffic_light = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_level_crossing_detect/launch/turtlebot3_autorace_detect_traffic_light.launch"])     
-                    self.launch_detect_traffic_light_launched = True
-                    self.launch_detect_traffic_light.start()
-                else:
-                    pass
-            else:
-                if self.launch_detect_traffic_light_launched == True:
-                    self.launch_detect_traffic_light_launched = False
-                    self.launch_detect_traffic_light.shutdown()
-                else:
-                    pass    
-                    
+                    pass                                   
 
         elif launch_num == self.Launcher.launch_control_moving.value:
-            # rospy.loginfo("launcha")
             if is_start == True:
-                # rospy.loginfo("launchb")
                 if self.launch_control_moving_launched == False:
-                    # rospy.loginfo("launchc")
                     self.launch_control_moving = roslaunch.scriptapi.ROSLaunch()
                     self.launch_control_moving = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_level_crossing_control/launch/turtlebot3_autorace_control_moving.launch"])
                     self.launch_control_moving_launched = True
                     self.launch_control_moving.start()
                 else:
                     pass
-                # rospy.loginfo("launchd")
             else:
                 if self.launch_control_moving_launched == True:
                     self.launch_control_moving_launched = False

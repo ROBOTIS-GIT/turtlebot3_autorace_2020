@@ -21,5 +21,6 @@
   <exec_depend>turtlebot3_autorace_level_crossing</exec_depend>
   <exec_depend>turtlebot3_autorace_traffic_light</exec_depend>
   <exec_depend>turtlebot3_autorace_tunnel</exec_depend>
+  <exec_depend>turtlebot3_autorace_msgs</exec_depend>
   <export><metapackage/></export>
 </package>

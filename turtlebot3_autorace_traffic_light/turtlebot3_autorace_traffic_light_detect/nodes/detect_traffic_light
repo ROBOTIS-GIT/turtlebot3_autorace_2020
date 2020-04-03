@@ -27,29 +27,29 @@ from std_msgs.msg import UInt8, Float64
 from sensor_msgs.msg import Image, CompressedImage
 from cv_bridge import CvBridge, CvBridgeError
 from dynamic_reconfigure.server import Server
-from turtlebot3_autorace_detect.cfg import DetectTrafficLightParamsConfig
+from turtlebot3_autorace_traffic_light_detect.cfg import DetectTrafficLightParamsConfig
 
 class DetectTrafficLight():
     def __init__(self):
         self.hue_red_l = rospy.get_param("~detect/lane/red/hue_l", 0)
-        self.hue_red_h = rospy.get_param("~detect/lane/red/hue_h", 30)
-        self.saturation_red_l = rospy.get_param("~detect/lane/red/saturation_l", 22)
-        self.saturation_red_h = rospy.get_param("~detect/lane/red/saturation_h", 203)
-        self.lightness_red_l = rospy.get_param("~detect/lane/red/lightness_l", 106)
-        self.lightness_red_h = rospy.get_param("~detect/lane/red/lightness_h", 255)
+        self.hue_red_h = rospy.get_param("~detect/lane/red/hue_h", 26)
+        self.saturation_red_l = rospy.get_param("~detect/lane/red/saturation_l", 239)
+        self.saturation_red_h = rospy.get_param("~detect/lane/red/saturation_h", 255)
+        self.lightness_red_l = rospy.get_param("~detect/lane/red/lightness_l", 123)
+        self.lightness_red_h = rospy.get_param("~detect/lane/red/lightness_h", 250)
 
-        self.hue_yellow_l = rospy.get_param("~detect/lane/yellow/hue_l", 7)
-        self.hue_yellow_h = rospy.get_param("~detect/lane/yellow/hue_h", 26)
-        self.saturation_yellow_l = rospy.get_param("~detect/lane/yellow/saturation_l", 7)
-        self.saturation_yellow_h = rospy.get_param("~detect/lane/yellow/saturation_h", 199)
-        self.lightness_yellow_l = rospy.get_param("~detect/lane/yellow/lightness_l", 220)
+        self.hue_yellow_l = rospy.get_param("~detect/lane/yellow/hue_l", 19)
+        self.hue_yellow_h = rospy.get_param("~detect/lane/yellow/hue_h", 33)
+        self.saturation_yellow_l = rospy.get_param("~detect/lane/yellow/saturation_l", 237)
+        self.saturation_yellow_h = rospy.get_param("~detect/lane/yellow/saturation_h", 255)
+        self.lightness_yellow_l = rospy.get_param("~detect/lane/yellow/lightness_l", 231)
         self.lightness_yellow_h = rospy.get_param("~detect/lane/yellow/lightness_h", 255)
 
-        self.hue_green_l = rospy.get_param("~detect/lane/green/hue_l", 39)
-        self.hue_green_h = rospy.get_param("~detect/lane/green/hue_h", 81)
-        self.saturation_green_l = rospy.get_param("~detect/lane/green/saturation_l", 177)
+        self.hue_green_l = rospy.get_param("~detect/lane/green/hue_l", 40)
+        self.hue_green_h = rospy.get_param("~detect/lane/green/hue_h", 113)
+        self.saturation_green_l = rospy.get_param("~detect/lane/green/saturation_l", 210)
         self.saturation_green_h = rospy.get_param("~detect/lane/green/saturation_h", 255)
-        self.lightness_green_l = rospy.get_param("~detect/lane/green/lightness_l", 106)
+        self.lightness_green_l = rospy.get_param("~detect/lane/green/lightness_l", 131)
         self.lightness_green_h = rospy.get_param("~detect/lane/green/lightness_h", 255)
 
         self.is_calibration_mode = rospy.get_param("~is_detection_calibration_mode", False)

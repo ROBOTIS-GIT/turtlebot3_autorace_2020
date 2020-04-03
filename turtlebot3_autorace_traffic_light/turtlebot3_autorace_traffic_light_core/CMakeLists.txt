@@ -7,7 +7,9 @@ project(turtlebot3_autorace_traffic_light_core)
 ################################################################################
 # Find catkin packages and libraries for catkin and system dependencies
 ################################################################################
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+  turtlebot3_gazebo
+)
 
 ################################################################################
 # Setup for python modules and scripts
@@ -25,8 +27,9 @@ catkin_python_setup()
 ################################################################################
 # Declare catkin specific configuration to be passed to dependent projects
 ################################################################################
-catkin_package()
-
+catkin_package(
+  CATKIN_DEPENDS turtlebot3_gazebo
+)
 ################################################################################
 # Build
 ################################################################################

@@ -48,7 +48,7 @@ catkin_install_python(PROGRAMS
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(DIRECTORY cfg file launch param
+install(DIRECTORY cfg launch param
 	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 

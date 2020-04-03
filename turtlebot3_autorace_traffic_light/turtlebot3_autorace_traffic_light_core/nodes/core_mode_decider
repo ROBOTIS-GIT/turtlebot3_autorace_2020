@@ -23,7 +23,7 @@ import rospy
 import numpy as np
 from enum import Enum
 from std_msgs.msg import UInt8
-from turtlebot3_msgs.msg import movingParam
+from turtlebot3_autorace_msgs.msg import MovingParam
 
 class CoreModeDecider():
     def __init__(self):

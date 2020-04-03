@@ -88,16 +88,10 @@ class CoreNodeController():
 
             self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
             self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
-            self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
-            self.fnLaunch(self.Launcher.launch_detect_parking.value, False)
-            self.fnLaunch(self.Launcher.launch_detect_level.value, False)
-            self.fnLaunch(self.Launcher.launch_detect_tunnel.value, False)
-            self.fnLaunch(self.Launcher.launch_detect_construction.value, False)
 
-            self.fnLaunch(self.Launcher.launch_control_moving.value, True)
             self.fnLaunch(self.Launcher.launch_control_lane.value, True)
-            self.fnLaunch(self.Launcher.launch_control_parking.value, False)
-            self.fnLaunch(self.Launcher.launch_control_tunnel.value, False)
+            self.fnLaunch(self.Launcher.launch_control_intersection.value, False)
+            self.fnLaunch(self.Launcher.launch_control_moving.value, False)
 
         # intersection
         elif self.current_mode == self.CurrentMode.intersection.value:
@@ -112,18 +106,11 @@ class CoreNodeController():
 
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_parking.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_level.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_tunnel.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_construction.value, False)
-                
+
+                self.fnLaunch(self.Launcher.launch_control_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_control_moving.value, True)
                 self.fnLaunch(self.Launcher.launch_control_intersection.value, True)
-                self.fnLaunch(self.Launcher.launch_control_lane.value, True)
-                self.fnLaunch(self.Launcher.launch_control_parking.value, False)
-                self.fnLaunch(self.Launcher.launch_control_level.value, False)
-
+              
             elif self.current_step_intersection == self.StepOfIntersection.exit.value:
                 rospy.loginfo("Current step : exit")
                 rospy.loginfo("Go to next step : finished")
@@ -132,33 +119,19 @@ class CoreNodeController():
 
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_parking.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_level.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_tunnel.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_construction.value, False)
-
+               
                 self.fnLaunch(self.Launcher.launch_control_lane.value, False)
                 self.fnLaunch(self.Launcher.launch_control_moving.value, True)
                 self.fnLaunch(self.Launcher.launch_control_intersection.value, True)
-                self.fnLaunch(self.Launcher.launch_control_parking.value, False)
-                self.fnLaunch(self.Launcher.launch_control_tunnel.value, False)
 
             elif self.current_step_intersection == self.StepOfIntersection.finish.value:
                 rospy.loginfo("Current step : finished and detect lane")
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_parking.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_level.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_tunnel.value, False)
-                self.fnLaunch(self.Launcher.launch_detect_construction.value, False)
 
                 self.fnLaunch(self.Launcher.launch_control_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_control_moving.value, False)
                 self.fnLaunch(self.Launcher.launch_control_intersection.value, False)
-                self.fnLaunch(self.Launcher.launch_control_parking.value, False)
-                self.fnLaunch(self.Launcher.launch_control_tunnel.value, False)
 
             rospy.sleep(3)
 

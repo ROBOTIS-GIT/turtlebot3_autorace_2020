@@ -24,7 +24,7 @@ import numpy as np
 from enum import Enum
 from std_msgs.msg import UInt8
 from geometry_msgs.msg import Twist
-from turtlebot3_msgs.msg import movingParam
+from turtlebot3_autorace_msgs.msg import MovingParam
 
 class CoreModeDecider():
     def __init__(self):
@@ -34,7 +34,7 @@ class CoreModeDecider():
 
         self.pub_cmd_vel = rospy.Publisher('/cmd_vel', Twist, queue_size = 1)
         self.pub_debug = rospy.Publisher('/core/debug', UInt8, queue_size = 1)
-        self.pub_moving = rospy.Publisher('/control/moving/state', movingParam, queue_size= 1)
+        self.pub_moving = rospy.Publisher('/control/moving/state', MovingParam, queue_size= 1)
         # publishes : decided mode
         self.pub_decided_mode = rospy.Publisher('/core/decided_mode', UInt8, queue_size=1)
 

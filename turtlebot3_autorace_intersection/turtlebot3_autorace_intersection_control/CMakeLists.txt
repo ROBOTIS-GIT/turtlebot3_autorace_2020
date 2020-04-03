@@ -8,7 +8,7 @@ project(turtlebot3_autorace_intersection_control)
 # Find catkin packages and libraries for catkin and system dependencies
 ################################################################################
 find_package(catkin REQUIRED COMPONENTS
-  turtlebot3_msgs
+  turtlebot3_autorace_msgs
 )
 ################################################################################
 # Setup for python modules and scripts
@@ -27,7 +27,7 @@ catkin_python_setup()
 # Declare catkin specific configuration to be passed to dependent projects
 ################################################################################
 catkin_package(
-  CATKIN_DEPENDS turtlebot3_msgs
+  CATKIN_DEPENDS turtlebot3_autorace_msgs
 )
 ################################################################################
 # Build

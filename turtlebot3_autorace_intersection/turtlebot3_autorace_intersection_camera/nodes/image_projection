@@ -29,10 +29,10 @@ from turtlebot3_autorace_intersection_camera.cfg import ImageProjectionParamsCon
 
 class ImageProjection():
     def __init__(self):
-        self.top_x = rospy.get_param("/camera/extrinsic_camera_calibration/top_x", 72)
-        self.top_y = rospy.get_param("/camera/extrinsic_camera_calibration/top_y", 4)
-        self.bottom_x = rospy.get_param("/camera/extrinsic_camera_calibration/bottom_x", 115)
-        self.bottom_y = rospy.get_param("/camera/extrinsic_camera_calibration/bottom_y", 120)
+        self.top_x = rospy.get_param("/camera/extrinsic_camera_calibration/top_x", 80)
+        self.top_y = rospy.get_param("/camera/extrinsic_camera_calibration/top_y", 11)
+        self.bottom_x = rospy.get_param("/camera/extrinsic_camera_calibration/bottom_x", 113)
+        self.bottom_y = rospy.get_param("/camera/extrinsic_camera_calibration/bottom_y", 94)
 
         self.is_calibration_mode = rospy.get_param("~is_extrinsic_camera_calibration_mode", False)
         if self.is_calibration_mode == True:

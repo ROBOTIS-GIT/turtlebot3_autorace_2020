@@ -72,7 +72,7 @@ class DetectTunnel():
             self.start_pos_y = self.current_pos_y
 
             while True:
-                error = self.fnStraight(0.30)
+                error = self.fnStraight(0.60)
 
                 if math.fabs(error) < 0.005:
                     break

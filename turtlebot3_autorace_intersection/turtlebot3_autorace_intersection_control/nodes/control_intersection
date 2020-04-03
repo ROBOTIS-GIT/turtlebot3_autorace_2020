@@ -28,7 +28,7 @@ from enum import Enum
 from std_msgs.msg import UInt8, Float64, String
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
-from turtlebot3_msgs.msg import movingParam
+from turtlebot3_autorace_msgs.msg import MovingParam
 
 class ControlIntersection():
     def __init__(self):
@@ -39,7 +39,7 @@ class ControlIntersection():
         self.sub_odom = rospy.Subscriber('/odom', Odometry, self.cbOdom, queue_size=1)
         self.sub_traffic_sign = rospy.Subscriber('/detect/traffic_sign', UInt8, self.cbInvokedByTrafficSign, queue_size=1)
 
-        self.pub_moving = rospy.Publisher('/control/moving/state', movingParam, queue_size= 1)
+        self.pub_moving = rospy.Publisher('/control/moving/state', MovingParam, queue_size= 1)
         self.pub_intersection_return = rospy.Publisher('/detect/intersection_stamped', UInt8, queue_size=1)
         self.pub_max_vel = rospy.Publisher('/control/max_vel', Float64, queue_size = 1)
     
@@ -90,7 +90,7 @@ class ControlIntersection():
             rospy.sleep(1)
             
             rospy.loginfo("Now motion")
-            msg_moving = movingParam()
+            msg_moving = MovingParam()
             msg_moving.moving_type=4
             msg_moving.moving_value_angular=0
             msg_moving.moving_value_linear=0.05
@@ -109,7 +109,7 @@ class ControlIntersection():
             
             if self.is_right_detected == True:
                 rospy.loginfo("right moving")
-                msg_moving = movingParam()
+                msg_moving = MovingParam()
                 msg_moving.moving_type=3
                 msg_moving.moving_value_angular=45
                 msg_moving.moving_value_linear=0.0
@@ -123,7 +123,7 @@ class ControlIntersection():
                   
             elif self.is_left_detected == True:
                 rospy.loginfo("left moving")
-                msg_moving = movingParam()
+                msg_moving = MovingParam()
                 msg_moving.moving_type=2
                 msg_moving.moving_value_angular=80
                 msg_moving.moving_value_linear=0.0
