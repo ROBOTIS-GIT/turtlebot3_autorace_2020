@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>turtlebot3_autorace_detect</name>
+  <version>1.0.0</version>
+  <description>
+    AutoRace ROS packages for feature detection with TurtleBot3 Auto
+  </description>
+  <license>Apache 2.0</license>
+  <author email="ashekim@robotis.com">Ashe</author>
+  <author>Ashe Kim</author>
+  <maintainer email="ashekim@robotis.com">Ashe</maintainer>
+  <maintainer email="willson@robotis.com">Will Son</maintainer>
+  <url type="website">http://wiki.ros.org/turtlebot3_autorace</url>
+  <url type="emanual">http://turtlebot3.robotis.com</url>
+  <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_autorace_2020</url>
+  <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_autorace_2020/issues</url>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>dynamic_reconfigure</depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>move_base_msgs</exec_depend>
+  <exec_depend>tf</exec_depend>
+  <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>python-opencv</exec_depend>
+  <exec_depend>python-numpy</exec_depend>
+  <exec_depend>python-enum34</exec_depend>
+</package>
+

@@ -1,0 +1,7 @@
+<launch>
+  <!-- left detection -->
+  <node pkg="turtlebot3_autorace_detect" type="detect_construction" name="detect_construction" output="screen">
+    <remap from="/control/cmd_vel" to="/cmd_vel" />
+    <remap from="/detect/scan" to="/scan" />
+  </node>
+</launch>

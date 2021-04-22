@@ -15,12 +15,14 @@
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_autorace_2020</url>
   <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_autorace_2020/issues</url>
   <buildtool_depend>catkin</buildtool_depend>
-  <exec_depend>turtlebot3_autorace_construction</exec_depend>
-  <exec_depend>turtlebot3_autorace_intersection</exec_depend>
-  <exec_depend>turtlebot3_autorace_parking</exec_depend>
-  <exec_depend>turtlebot3_autorace_level_crossing</exec_depend>
-  <exec_depend>turtlebot3_autorace_traffic_light</exec_depend>
-  <exec_depend>turtlebot3_autorace_tunnel</exec_depend>
+  <exec_depend>turtlebot3_autorace_camera</exec_depend>
+  <exec_depend>turtlebot3_autorace_detect</exec_depend>
+  <!-- <exec_depend>turtlebot3_autorace_construction</exec_depend> -->
+  <!-- <exec_depend>turtlebot3_autorace_intersection</exec_depend> -->
+  <!-- <exec_depend>turtlebot3_autorace_parking</exec_depend> -->
+  <!-- <exec_depend>turtlebot3_autorace_level_crossing</exec_depend> -->
+  <!-- <exec_depend>turtlebot3_autorace_traffic_light</exec_depend> -->
+  <!-- <exec_depend>turtlebot3_autorace_tunnel</exec_depend> -->
   <exec_depend>turtlebot3_autorace_msgs</exec_depend>
   <export><metapackage/></export>
 </package>
