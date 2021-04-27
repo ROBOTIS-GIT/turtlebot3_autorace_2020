@@ -33,7 +33,7 @@ class DetectSign():
     def __init__(self):
         self.fnPreproc()
 
-        self.sub_image_type = "compressed" # you can choose image type "compressed", "raw"
+        self.sub_image_type = "raw" # you can choose image type "compressed", "raw"
         self.pub_image_type = "compressed" # you can choose image type "compressed", "raw"
 
         if self.sub_image_type == "compressed":
@@ -53,7 +53,7 @@ class DetectSign():
             self.pub_image_traffic_sign = rospy.Publisher('/detect/image_output', Image, queue_size = 1)
 
         self.cvBridge = CvBridge()
-        self.TrafficSign = Enum('TrafficSign', 'divide stop parking tunnel left right no_entry construction')
+        self.TrafficSign = Enum('TrafficSign', 'stop')
         self.counter = 1
 
     def fnPreproc(self):

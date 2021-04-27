@@ -48,7 +48,7 @@ class DetectTrafficLight():
         self.hue_green_l = rospy.get_param("~detect/lane/green/hue_l", 40)
         self.hue_green_h = rospy.get_param("~detect/lane/green/hue_h", 113)
         self.saturation_green_l = rospy.get_param("~detect/lane/green/saturation_l", 210)
-        self.saturation_green_h = rospy.get_param("~detect/lane/green/saturation_h", 255)
+        self.saturation_green_h = rospy.get_param("~detect/lane/green/saturation_h", 249)
         self.lightness_green_l = rospy.get_param("~detect/lane/green/lightness_l", 131)
         self.lightness_green_h = rospy.get_param("~detect/lane/green/lightness_h", 255)
 

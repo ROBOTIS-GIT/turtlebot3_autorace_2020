@@ -18,6 +18,6 @@ detect:
       hue_l: 40
       hue_h: 113
       saturation_l: 210
-      saturation_h: 255
+      saturation_h: 249
       lightness_l: 131
       lightness_h: 255

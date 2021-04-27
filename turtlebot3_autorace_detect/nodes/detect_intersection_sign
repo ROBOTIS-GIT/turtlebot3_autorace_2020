@@ -33,7 +33,7 @@ class DetectSign():
     def __init__(self):
         self.fnPreproc()
 
-        self.sub_image_type = "compressed" # you can choose image type "compressed", "raw"
+        self.sub_image_type = "raw" # you can choose image type "compressed", "raw"
         self.pub_image_type = "compressed" # you can choose image type "compressed", "raw"
 
         if self.sub_image_type == "compressed":
@@ -54,7 +54,7 @@ class DetectSign():
 
         self.cvBridge = CvBridge()
 
-        self.TrafficSign = Enum('TrafficSign', 'divide left right')
+        self.TrafficSign = Enum('TrafficSign', 'left right')
 
         self.counter = 1
 

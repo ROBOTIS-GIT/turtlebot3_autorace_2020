@@ -39,6 +39,8 @@ class DetectContruction():
         self.sub_scan_obstacle = rospy.Subscriber('/detect/scan', LaserScan, self.cbScanObstacle, queue_size=1)
         self.sub_construction_finished = rospy.Subscriber('/control/construction_finished', UInt8, self.cbConstructionFinished, queue_size = 1)
         self.sub_moving_completed = rospy.Subscriber('/control/moving/complete', UInt8, self.cbMovingComplete, queue_size = 1)
+
+        # publishes state
         self.pub_construction_return = rospy.Publisher('/detect/construction_stamped', UInt8, queue_size=1)
         self.pub_construction_start = rospy.Publisher('/control/construction_start', UInt8, queue_size = 1)
         self.pub_moving = rospy.Publisher('/control/moving/state', MovingParam, queue_size= 1)
@@ -78,7 +80,6 @@ class DetectContruction():
             msg_pub_max_vel.data = 0.0
             self.pub_max_vel.publish(msg_pub_max_vel)
             
-
             msg_pub_construction_return.data = self.StepOfConstruction.find_obstacle.value
 
         elif order.data == self.StepOfConstruction.motion_lf.value:
@@ -101,7 +102,7 @@ class DetectContruction():
             rospy.loginfo("doing motion_str")
             msg_moving.moving_type= 4
             msg_moving.moving_value_angular=0.0
-            msg_moving.moving_value_linear=0.2
+            msg_moving.moving_value_linear=0.25
             self.pub_moving.publish(msg_moving)
             while True:
                 if self.is_moving_complete == True:
@@ -112,7 +113,7 @@ class DetectContruction():
 
             rospy.loginfo("doing motion_ri")
             msg_moving.moving_type=3
-            msg_moving.moving_value_angular=80
+            msg_moving.moving_value_angular=90
             msg_moving.moving_value_linear=0.0
             self.pub_moving.publish(msg_moving)
             while True:
@@ -136,7 +137,7 @@ class DetectContruction():
 
             rospy.loginfo("doing motion_ri2")
             msg_moving.moving_type=3
-            msg_moving.moving_value_angular=80
+            msg_moving.moving_value_angular=90
             msg_moving.moving_value_linear=0.0
             self.pub_moving.publish(msg_moving)
             while True:
@@ -149,7 +150,7 @@ class DetectContruction():
             rospy.loginfo("doing motion_str3")
             msg_moving.moving_type= 4
             msg_moving.moving_value_angular=0.0
-            msg_moving.moving_value_linear=0.20
+            msg_moving.moving_value_linear=0.27
             self.pub_moving.publish(msg_moving)
             while True:
                 if self.is_moving_complete == True:
@@ -194,11 +195,9 @@ class DetectContruction():
 
             rospy.sleep(1)
 
-            # msg_moving = movingParam()
-
             msg_moving.moving_type=4
             msg_moving.moving_value_angular=0.0
-            msg_moving.moving_value_linear=0.5
+            msg_moving.moving_value_linear=0.3
             self.pub_moving.publish(msg_moving)
             while True:
                 if self.is_moving_complete == True:
@@ -225,7 +224,7 @@ class DetectContruction():
         angle_scan = 25
         scan_start = 0 - angle_scan
         scan_end = 0 + angle_scan
-        threshold_distance = 0.30
+        threshold_distance = 0.25
         is_obstacle_detected = False
 
         for i in range(scan_start, scan_end):

@@ -33,8 +33,9 @@ class DetectSign():
     def __init__(self):
         self.fnPreproc()
 
-        self.sub_image_type = "compressed" # you can choose image type "compressed", "raw"
+        self.sub_image_type = "raw" # you can choose image type "compressed", "raw"
         self.pub_image_type = "compressed" # you can choose image type "compressed", "raw"
+        self.TrafficSign = Enum('TrafficSign', 'construction')
 
         if self.sub_image_type == "compressed":
             # subscribes compressed image
@@ -43,8 +44,9 @@ class DetectSign():
             # subscribes raw image
             self.sub_image_original = rospy.Subscriber('/detect/image_input', Image, self.cbFindTrafficSign, queue_size = 1)
 
+        # publishes traffic sign
         self.pub_traffic_sign = rospy.Publisher('/detect/traffic_sign', UInt8, queue_size=1)
-
+        
         if self.pub_image_type == "compressed":
             # publishes traffic sign image in compressed type 
             self.pub_image_traffic_sign = rospy.Publisher('/detect/image_output/compressed', CompressedImage, queue_size = 1)
@@ -53,9 +55,6 @@ class DetectSign():
             self.pub_image_traffic_sign = rospy.Publisher('/detect/image_output', Image, queue_size = 1)
 
         self.cvBridge = CvBridge()
-
-        self.TrafficSign = Enum('TrafficSign', 'divide stop parking tunnel left right no_entry construction')
-
         self.counter = 1
 
     def fnPreproc(self):
@@ -67,8 +66,6 @@ class DetectSign():
         dir_path += 'image/'
 
         self.img_construction  = cv2.imread(dir_path + 'construction.png',0)
-        rospy.loginfo("image read!")
-
         self.kp_construction, self.des_construction  = self.sift.detectAndCompute(self.img_construction, None)
       
         FLANN_INDEX_KDTREE = 0

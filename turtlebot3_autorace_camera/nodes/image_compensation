@@ -37,7 +37,7 @@ class ImageCompensation():
 
 
         self.sub_image_type = "compressed"  # "compressed" / "raw"
-        self.pub_image_type = "compressed"  # "compressed" / "raw"
+        self.pub_image_type = "raw"  # "compressed" / "raw"
 
 
         if self.sub_image_type == "compressed":

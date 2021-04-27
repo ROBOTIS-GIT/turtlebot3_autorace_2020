@@ -2,14 +2,12 @@
 # Set minimum required version of cmake, project name and compile options
 ################################################################################
 cmake_minimum_required(VERSION 2.8.3)
-project(turtlebot3_autorace_detect)
+project(turtlebot3_autorace_core)
 
 ################################################################################
 # Find catkin packages and libraries for catkin and system dependencies
 ################################################################################
-find_package(catkin REQUIRED COMPONENTS
-  dynamic_reconfigure
-)
+find_package(catkin REQUIRED)
 
 ################################################################################
 # Setup for python modules and scripts
@@ -23,18 +21,11 @@ catkin_python_setup()
 ################################################################################
 # Declare ROS dynamic reconfigure parameters
 ################################################################################
-generate_dynamic_reconfigure_options(
-  cfg/DetectLaneParams.cfg
-  cfg/DetectLevelParams.cfg
-  cfg/DetectTrafficLightParams.cfg
-)
 
 ################################################################################
 # Declare catkin specific configuration to be passed to dependent projects
 ################################################################################
-catkin_package(
-  CATKIN_DEPENDS dynamic_reconfigure
-)
+catkin_package()
 
 ################################################################################
 # Build
@@ -44,25 +35,26 @@ catkin_package(
 # Install
 ################################################################################
 catkin_install_python(PROGRAMS
-  nodes/detect_construction
-  nodes/detect_construction_sign
-  nodes/detect_intersection_sign
-  nodes/detect_lane
-  nodes/detect_level_crossing
-  nodes/detect_level_crossing_sign
-  nodes/detect_parking
-  nodes/detect_parking_sign
-  nodes/detect_traffic_light
-  nodes/detect_tunnel
-  nodes/detect_tunnel_sign
+  nodes/core_node_mission
+  nodes/construction_core_mode_decider
+  nodes/construction_core_node_controller
+  nodes/intersection_core_mode_decider
+  nodes/intersection_core_node_controller
+  nodes/level_crossing_core_mode_decider
+  nodes/level_crossing_core_node_controller
+  nodes/parking_core_mode_decider
+  nodes/parking_core_node_controller
+  nodes/traffic_light_core_mode_decider
+  nodes/traffic_light_core_node_controller
+  nodes/tunnel_core_mode_decider
+  nodes/tunnel_core_node_controller
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(DIRECTORY cfg file launch param
+install(DIRECTORY launch
 	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
 ################################################################################
 # Test
 ################################################################################
-

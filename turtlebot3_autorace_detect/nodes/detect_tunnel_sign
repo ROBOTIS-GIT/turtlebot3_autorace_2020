@@ -33,7 +33,7 @@ class DetectSign():
     def __init__(self):
         self.fnPreproc()
 
-        self.sub_image_type = "compressed" # you can choose image type "compressed", "raw"
+        self.sub_image_type = "raw" # you can choose image type "compressed", "raw"
         self.pub_image_type = "compressed" # you can choose image type "compressed", "raw"
 
         if self.sub_image_type == "compressed":
@@ -54,7 +54,7 @@ class DetectSign():
 
         self.cvBridge = CvBridge()
 
-        self.TrafficSign = Enum('TrafficSign', 'divide stop parking tunnel left')
+        self.TrafficSign = Enum('TrafficSign', 'tunnel')
 
         self.counter = 1
 
@@ -98,7 +98,7 @@ class DetectSign():
         elif self.sub_image_type == "raw":
             cv_image_input = self.cvBridge.imgmsg_to_cv2(image_msg, "bgr8")
 
-        MIN_MATCH_COUNT = 9
+        MIN_MATCH_COUNT = 5
         MIN_MSE_DECISION = 50000
 
         # find the keypoints and descriptors with SIFT

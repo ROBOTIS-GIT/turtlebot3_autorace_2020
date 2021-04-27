@@ -2,15 +2,14 @@
 # Set minimum required version of cmake, project name and compile options
 ################################################################################
 cmake_minimum_required(VERSION 2.8.3)
-project(turtlebot3_autorace_detect)
+project(turtlebot3_autorace_driving)
 
 ################################################################################
 # Find catkin packages and libraries for catkin and system dependencies
 ################################################################################
 find_package(catkin REQUIRED COMPONENTS
-  dynamic_reconfigure
+  turtlebot3_autorace_msgs
 )
-
 ################################################################################
 # Setup for python modules and scripts
 ################################################################################
@@ -23,19 +22,13 @@ catkin_python_setup()
 ################################################################################
 # Declare ROS dynamic reconfigure parameters
 ################################################################################
-generate_dynamic_reconfigure_options(
-  cfg/DetectLaneParams.cfg
-  cfg/DetectLevelParams.cfg
-  cfg/DetectTrafficLightParams.cfg
-)
 
 ################################################################################
 # Declare catkin specific configuration to be passed to dependent projects
 ################################################################################
 catkin_package(
-  CATKIN_DEPENDS dynamic_reconfigure
+  CATKIN_DEPENDS turtlebot3_autorace_msgs
 )
-
 ################################################################################
 # Build
 ################################################################################
@@ -44,21 +37,14 @@ catkin_package(
 # Install
 ################################################################################
 catkin_install_python(PROGRAMS
-  nodes/detect_construction
-  nodes/detect_construction_sign
-  nodes/detect_intersection_sign
-  nodes/detect_lane
-  nodes/detect_level_crossing
-  nodes/detect_level_crossing_sign
-  nodes/detect_parking
-  nodes/detect_parking_sign
-  nodes/detect_traffic_light
-  nodes/detect_tunnel
-  nodes/detect_tunnel_sign
+  nodes/control_lane
+  nodes/control_moving
+  nodes/control_intersection
+  nodes/control_parking
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(DIRECTORY cfg file launch param
+install(DIRECTORY launch
 	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
