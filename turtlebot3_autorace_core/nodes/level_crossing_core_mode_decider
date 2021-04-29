@@ -30,7 +30,6 @@ class CoreModeDecider():
         
         # subscribes : invoking object detected
         self.sub_traffic_sign = rospy.Subscriber('/detect/traffic_sign', UInt8, self.cbInvokedByTrafficSign, queue_size=1)
-        self.sub_traffic_line = rospy.Subscriber('/detect/traffic_line', UInt8, self.cbInvokedByTrafficLine, queue_size=1)
         self.sub_returned_mode = rospy.Subscriber('/core/returned_mode', UInt8, self.cbReturnedMode, queue_size=1)
 
         # publishes : decided mode
@@ -38,7 +37,7 @@ class CoreModeDecider():
         self.pub_decided_mode = rospy.Publisher('/core/decided_mode', UInt8, queue_size=1)
         # self.pub_moving = rospy.Publisher('/control/moving/state', movingParam, queue_size= 1)
 
-        self.InvokedObject = Enum('InvokedObject', 'traffic_sign traffic_line')
+        self.InvokedObject = Enum('InvokedObject', 'traffic_sign')
         self.TrafficSign = Enum('TrafficSign', 'stop')
         self.CurrentMode = Enum('CurrentMode', 'idle lane_following level_crossing')
 
@@ -50,11 +49,6 @@ class CoreModeDecider():
         rospy.loginfo("invoke sign")
         self.fnDecideMode(self.InvokedObject.traffic_sign.value, traffic_sign_type_msg)
         rospy.loginfo("Traffic sign detected")
-
-    def cbInvokedByTrafficLine(self, traffic_line_type_msg):
-        rospy.loginfo("invoke line")
-        self.fnDecideMode(self.InvokedObject.traffic_line.value, traffic_line_type_msg)
-        rospy.loginfo("Traffic line detected")
 
     def cbReturnedMode(self, mode):
         rospy.loginfo("Init Mode")

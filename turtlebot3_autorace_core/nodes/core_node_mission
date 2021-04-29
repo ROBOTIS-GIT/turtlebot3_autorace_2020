@@ -166,7 +166,7 @@ class ControlMission():
                 self.traffic_state = 7
 
             elif self.traffic_state == 8:  # bar up
-                if abs(self.current_time - time.time()) > 5:
+                if abs(self.current_time - time.time()) > 10:
                     rospy.wait_for_service('gazebo/spawn_sdf_model')
                     spawn_model_prox = rospy.ServiceProxy('gazebo/spawn_sdf_model', SpawnModel)
                     spawn_model_prox('down_bar', self.down_bar_model, "robotos_name_space",

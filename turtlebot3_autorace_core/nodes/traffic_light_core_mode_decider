@@ -35,7 +35,7 @@ class CoreModeDecider():
         # publishes : decided mode
         self.pub_decided_mode = rospy.Publisher('/core/decided_mode', UInt8, queue_size=1)
 
-        self.InvokedObject = Enum('InvokedObject', 'traffic_sign traffic_light')
+        self.InvokedObject = Enum('InvokedObject', 'traffic_light')
         self.CurrentMode = Enum('CurrentMode', 'idle lane_following traffic_light')
 
         self.fnInitMode()
@@ -66,13 +66,14 @@ class CoreModeDecider():
                 self.current_mode = self.CurrentMode.traffic_light.value
             else:
                 pass
-
             self.fnPublishMode()
 
         elif self.current_mode == self.CurrentMode.traffic_light.value:
             if invoked_object == self.InvokedObject.traffic_light.value:
                 self.current_mode = self.CurrentMode.lane_following.value
-                self.fnPublishMode()
+            else:
+                pass
+            self.fnPublishMode()
 
         else:
             pass

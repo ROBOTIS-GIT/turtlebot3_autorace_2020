@@ -89,24 +89,19 @@ class DetectTrafficLight():
 
 
         self.sub_traffic_light_finished = rospy.Subscriber('/control/traffic_light_finished', UInt8, self.cbTrafficLightFinished, queue_size = 1)
+
         self.pub_traffic_light_return = rospy.Publisher('/detect/traffic_light_stamped', UInt8, queue_size=1)
         self.pub_parking_start = rospy.Publisher('/control/traffic_light_start', UInt8, queue_size = 1)
         self.pub_max_vel = rospy.Publisher('/control/max_vel', Float64, queue_size = 1)
-
-
         self.pub_traffic_light = rospy.Publisher('/detect/traffic_light', UInt8, queue_size=1)
 
-
-        self.CurrentMode = Enum('CurrentMode', 'idle lane_following traffic_light parking_lot level_crossing tunnel')
-        self.StepOfTrafficLight = Enum('StepOfTrafficLight', 'searching_traffic_light searching_green_light searching_yellow_light searching_red_light waiting_green_light pass_traffic_light')
-
+        self.CurrentMode = Enum('CurrentMode', 'idle lane_following traffic_light')
+    
         self.cvBridge = CvBridge()
         self.cv_image = None
 
         self.is_image_available = False
         self.is_traffic_light_finished = False
-
-
 
         self.green_count = 0
         self.yellow_count = 0

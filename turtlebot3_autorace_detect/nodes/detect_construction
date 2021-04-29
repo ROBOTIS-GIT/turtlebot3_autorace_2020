@@ -47,10 +47,9 @@ class DetectContruction():
         self.pub_max_vel = rospy.Publisher('/control/max_vel', Float64, queue_size = 1)
         self.pub_timer_start = rospy.Publisher('/detect/timer/start', Float64, queue_size= 1)
        
-        self.StepOfConstruction = Enum('StepOfConstruction', 'searching_construction_sign find_obstacle motion_lf exit')
+        self.StepOfConstruction = Enum('StepOfConstruction', 'find_obstacle avoid_obstacle exit')
         self.is_obstacle_detected = False
         self.is_construction_finished = False
-        self.is_motion_allowed = False
         self.is_moving_complete = False
 
     def cbMovingComplete(self, data):
@@ -59,37 +58,30 @@ class DetectContruction():
     def cbConstructionOrder(self, order):
         msg_pub_construction_return = UInt8()
 
-        if order.data == self.StepOfConstruction.searching_construction_sign.value:
-            rospy.loginfo("begin")
-
-            msg_pub_construction_return.data = self.StepOfConstruction.searching_construction_sign.value
-
-        elif order.data == self.StepOfConstruction.find_obstacle.value:
+        if order.data == self.StepOfConstruction.find_obstacle.value:
             rospy.loginfo("find obstacle")
 
             while True:
                 if self.is_obstacle_detected == True:
-
                     rospy.loginfo("Encounter obstacle")
                     break
                 else:
                     pass
-                    # rospy.loginfo("Not yet")
 
             msg_pub_max_vel = Float64()
             msg_pub_max_vel.data = 0.0
-            self.pub_max_vel.publish(msg_pub_max_vel)
-            
-            msg_pub_construction_return.data = self.StepOfConstruction.find_obstacle.value
+            self.pub_max_vel.publish(msg_pub_max_vel)            
 
-        elif order.data == self.StepOfConstruction.motion_lf.value:
+            rospy.sleep(1)
 
-            rospy.sleep(3)
+            msg_pub_construction_return.data = self.StepOfConstruction.avoid_obstacle.value
 
-            rospy.loginfo("doing motion_lf")
+        elif order.data == self.StepOfConstruction.avoid_obstacle.value:
+            rospy.loginfo("avoid obstacle")
+            rospy.loginfo("go left")
             msg_moving = MovingParam()
             msg_moving.moving_type=2
-            msg_moving.moving_value_angular=80
+            msg_moving.moving_value_angular=90
             msg_moving.moving_value_linear=0.0
             self.pub_moving.publish(msg_moving)
             while True:
@@ -99,7 +91,7 @@ class DetectContruction():
 
             rospy.sleep(1)
 
-            rospy.loginfo("doing motion_str")
+            rospy.loginfo("go straight")
             msg_moving.moving_type= 4
             msg_moving.moving_value_angular=0.0
             msg_moving.moving_value_linear=0.25
@@ -111,7 +103,7 @@ class DetectContruction():
 
             rospy.sleep(1)
 
-            rospy.loginfo("doing motion_ri")
+            rospy.loginfo("go right")
             msg_moving.moving_type=3
             msg_moving.moving_value_angular=90
             msg_moving.moving_value_linear=0.0
@@ -123,7 +115,7 @@ class DetectContruction():
 
             rospy.sleep(1)
 
-            rospy.loginfo("doing motion_str2")
+            rospy.loginfo("go straight")
             msg_moving.moving_type= 4
             msg_moving.moving_value_angular=0.0
             msg_moving.moving_value_linear=0.4
@@ -135,7 +127,7 @@ class DetectContruction():
 
             rospy.sleep(1)
 
-            rospy.loginfo("doing motion_ri2")
+            rospy.loginfo("go right")
             msg_moving.moving_type=3
             msg_moving.moving_value_angular=90
             msg_moving.moving_value_linear=0.0
@@ -147,10 +139,10 @@ class DetectContruction():
 
             rospy.sleep(1)
 
-            rospy.loginfo("doing motion_str3")
+            rospy.loginfo("go straight")
             msg_moving.moving_type= 4
             msg_moving.moving_value_angular=0.0
-            msg_moving.moving_value_linear=0.27
+            msg_moving.moving_value_linear=0.3
             self.pub_moving.publish(msg_moving)
             while True:
                 if self.is_moving_complete == True:
@@ -159,7 +151,7 @@ class DetectContruction():
 
             rospy.sleep(1)
 
-            rospy.loginfo("doing motion_lf2")
+            rospy.loginfo("go left")
             msg_moving.moving_type=2
             msg_moving.moving_value_angular=90
             msg_moving.moving_value_linear=0.0
@@ -171,10 +163,10 @@ class DetectContruction():
 
             rospy.sleep(1)
 
-            rospy.loginfo("doing motion_str4")
+            rospy.loginfo("go straight")
             msg_moving.moving_type=4
             msg_moving.moving_value_angular=0.0
-            msg_moving.moving_value_linear=0.40
+            msg_moving.moving_value_linear=0.4
             self.pub_moving.publish(msg_moving)
             while True:
                 if self.is_moving_complete == True:
@@ -183,7 +175,7 @@ class DetectContruction():
 
             rospy.sleep(1)
 
-            rospy.loginfo("doing motion_lf3")
+            rospy.loginfo("go left")
             msg_moving.moving_type=2
             msg_moving.moving_value_angular=80
             msg_moving.moving_value_linear=0.0
@@ -195,27 +187,25 @@ class DetectContruction():
 
             rospy.sleep(1)
 
+            rospy.loginfo("go straight")
             msg_moving.moving_type=4
             msg_moving.moving_value_angular=0.0
-            msg_moving.moving_value_linear=0.3
+            msg_moving.moving_value_linear=0.4
             self.pub_moving.publish(msg_moving)
             while True:
                 if self.is_moving_complete == True:
-                    break
-         
+                    break         
             self.is_moving_complete = False
 
-            msg_pub_construction_return.data = self.StepOfConstruction.motion_lf.value        
-
-            rospy.sleep(3)
+            rospy.loginfo("construction finished")
+            msg_pub_construction_return.data = self.StepOfConstruction.exit.value        
 
         elif order.data == self.StepOfConstruction.exit.value:
-
             rospy.loginfo("construction finished")
-
             msg_pub_construction_return.data = self.StepOfConstruction.exit.value
 
         self.pub_construction_return.publish(msg_pub_construction_return)
+        rospy.sleep(3)
 
     def cbConstructionFinished(self, construction_finished_msg):
         self.is_construction_finished = True

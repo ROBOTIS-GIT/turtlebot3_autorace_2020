@@ -44,8 +44,8 @@ class CoreNodeController():
         self.CurrentMode = Enum('CurrentMode', 'idle lane_following intersection')
         self.current_mode = self.CurrentMode.idle.value
         
-        self.StepOfIntersection = Enum('StepOfIntersection', 'detect_intersection_sign exit finish')
-        self.current_step_intersection = self.StepOfIntersection.detect_intersection_sign.value
+        self.StepOfIntersection = Enum('StepOfIntersection', 'detect_direction exit')
+        self.current_step_intersection = self.StepOfIntersection.detect_direction.value
         
         self.Launcher = Enum('Launcher', 'launch_camera_ex_calib launch_detect_sign launch_detect_lane launch_control_lane launch_control_intersection launch_control_moving')
         self.uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
@@ -74,10 +74,14 @@ class CoreNodeController():
 
     def cbIntersectionStamped(self, intersection_msg):
         rospy.loginfo("intersection Step changed from %d", self.current_step_intersection)
-
         self.current_step_intersection = intersection_msg.data
 
-        rospy.loginfo("into %d", self.current_step_intersection)
+        if self.current_step_intersection == self.StepOfIntersection.exit.value:
+            self.current_mode = self.CurrentMode.lane_following.value
+            msg_mode_return = UInt8()
+            msg_mode_return.data = self.current_mode
+            self.pub_mode_return.publish(msg_mode_return)
+        
         self.is_triggered = True
 
     def fnControlNode(self): 
@@ -98,11 +102,11 @@ class CoreNodeController():
             rospy.loginfo("New trigger for intersection")
             msg_pub_intersection_order = UInt8()
 
-            if self.current_step_intersection == self.StepOfIntersection.detect_intersection_sign.value:
+            if self.current_step_intersection == self.StepOfIntersection.detect_direction.value:
                 rospy.loginfo("Current step : searching_intersection_sign")
                 rospy.loginfo("Go to next step : exit")
 
-                msg_pub_intersection_order.data = self.StepOfIntersection.detect_intersection_sign.value
+                msg_pub_intersection_order.data = self.StepOfIntersection.detect_direction.value
 
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
@@ -113,28 +117,17 @@ class CoreNodeController():
               
             elif self.current_step_intersection == self.StepOfIntersection.exit.value:
                 rospy.loginfo("Current step : exit")
-                rospy.loginfo("Go to next step : finished")
 
                 msg_pub_intersection_order.data = self.StepOfIntersection.exit.value
 
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
                
-                self.fnLaunch(self.Launcher.launch_control_lane.value, False)
-                self.fnLaunch(self.Launcher.launch_control_moving.value, True)
-                self.fnLaunch(self.Launcher.launch_control_intersection.value, True)
-
-            elif self.current_step_intersection == self.StepOfIntersection.finish.value:
-                rospy.loginfo("Current step : finished and detect lane")
-                self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
-                self.fnLaunch(self.Launcher.launch_detect_sign.value, False)
-
                 self.fnLaunch(self.Launcher.launch_control_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_control_moving.value, False)
                 self.fnLaunch(self.Launcher.launch_control_intersection.value, False)
 
             rospy.sleep(3)
-
             self.pub_intersection_order.publish(msg_pub_intersection_order)
 
     def fnLaunch(self, launch_num, is_start):

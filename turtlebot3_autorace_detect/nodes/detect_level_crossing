@@ -90,17 +90,17 @@ def fnCheckDistanceIsEqual(point1, point2, point3):
 class DetectLevel():
     def __init__(self):
         self.hue_red_l = rospy.get_param("~detect/level/red/hue_l", 0)
-        self.hue_red_h = rospy.get_param("~detect/level/red/hue_h", 10)
-        self.saturation_red_l = rospy.get_param("~detect/level/red/saturation_l", 43)
+        self.hue_red_h = rospy.get_param("~detect/level/red/hue_h", 179)
+        self.saturation_red_l = rospy.get_param("~detect/level/red/saturation_l", 24)
         self.saturation_red_h = rospy.get_param("~detect/level/red/saturation_h", 255)
-        self.lightness_red_l = rospy.get_param("~detect/level/red/lightness_l", 39)
+        self.lightness_red_l = rospy.get_param("~detect/level/red/lightness_l", 207)
         self.lightness_red_h = rospy.get_param("~detect/level/red/lightness_h", 162)
 
         self.is_calibration_mode = rospy.get_param("~is_detection_calibration_mode", False)
         if self.is_calibration_mode == True:
             srv_detect_lane = Server(DetectLevelParamsConfig, self.cbGetDetectLevelParam)
 
-        self.sub_image_type = "compressed" # you can choose image type "compressed", "raw"
+        self.sub_image_type = "raw" # you can choose image type "compressed", "raw"
         self.pub_image_type = "compressed" # you can choose image type "compressed", "raw"
 
         if self.sub_image_type == "compressed":
@@ -129,20 +129,14 @@ class DetectLevel():
         self.sub_level_crossing_finished = rospy.Subscriber('/control/level_crossing_finished', UInt8, self.cbLevelCrossingFinished, queue_size = 1)
 
         self.pub_level_crossing_return = rospy.Publisher('/detect/level_crossing_stamped', UInt8, queue_size=1)
-        self.pub_parking_start = rospy.Publisher('/control/level_crossing_start', UInt8, queue_size = 1)
-
         self.pub_max_vel = rospy.Publisher('/control/max_vel', Float64, queue_size = 1)
 
-        self.StepOfLevelCrossing = Enum('StepOfLevelCrossing', 'searching_stop_sign searching_level watching_level stop pass_level')
+        self.StepOfLevelCrossing = Enum('StepOfLevelCrossing', 'pass_level exit')
+        self.is_level_crossing_finished = False
+        self.counter = 1
 
         self.cvBridge = CvBridge()
         self.cv_image = None
-
-        self.stop_bar_count = 0
-
-        self.is_level_crossing_finished = False
-
-        self.counter = 1
 
         rospy.sleep(1)
 
@@ -189,77 +183,48 @@ class DetectLevel():
     def cbLevelCrossingOrder(self, order):
         pub_level_crossing_return = UInt8()
 
-        if order.data == self.StepOfLevelCrossing.searching_stop_sign.value:
+        if order.data == self.StepOfLevelCrossing.pass_level.value:
 
-            pub_level_crossing_return.data = self.StepOfLevelCrossing.searching_level.value
-                                                            
-        elif order.data == self.StepOfLevelCrossing.searching_level.value:
             rospy.loginfo("Now searching_level")
-
             msg_pub_max_vel = Float64()
-            msg_pub_max_vel.data = 0.03
+            msg_pub_max_vel.data = 0.01
             self.pub_max_vel.publish(msg_pub_max_vel)
 
             while True:
-                is_level_detected, _, _ = self.fnFindLevel()
+                is_level_detected, _ = self.fnFindLevel()
                 if is_level_detected == True:
                     break
                 else:
-                    pass
-            
-            rospy.loginfo("SLOWDOWN")
-
-            msg_pub_max_vel.data = 0.02
-            self.pub_max_vel.publish(msg_pub_max_vel)
-
-            pub_level_crossing_return.data = self.StepOfLevelCrossing.watching_level.value
-
-        elif order.data == self.StepOfLevelCrossing.watching_level.value:
-            rospy.loginfo("Now watching_level")
-
-            while True:
-                _, is_level_close, _ = self.fnFindLevel()
-                if is_level_close == True:
-                    break
-                else:
-                    pass
+                    pass 
 
             rospy.loginfo("STOP")
-
             msg_pub_max_vel = Float64()
             msg_pub_max_vel.data = 0.0
             self.pub_max_vel.publish(msg_pub_max_vel)
 
-            pub_level_crossing_return.data = self.StepOfLevelCrossing.stop.value
-
-        elif order.data == self.StepOfLevelCrossing.stop.value:
-            rospy.loginfo("Now stop")
-
             while True:
-                _, _, is_level_opened = self.fnFindLevel()
+                _, is_level_opened = self.fnFindLevel()
                 if is_level_opened == True:
                     break
                 else:
                     pass
 
-            rospy.loginfo("GO~")
-
+            rospy.loginfo("GO")
             msg_pub_max_vel = Float64()
             msg_pub_max_vel.data = 0.04
             self.pub_max_vel.publish(msg_pub_max_vel)
 
-            pub_level_crossing_return.data = self.StepOfLevelCrossing.pass_level.value
+            pub_level_crossing_return.data = self.StepOfLevelCrossing.exit.value
 
-        elif order.data == self.StepOfLevelCrossing.pass_level.value:
+        elif order.data == self.StepOfLevelCrossing.exit.value:
             rospy.loginfo("Now pass_level")
-
-            pub_level_crossing_return.data = self.StepOfLevelCrossing.pass_level.value
+            pub_level_crossing_return.data = self.StepOfLevelCrossing.exit.value
 
         self.pub_level_crossing_return.publish(pub_level_crossing_return)
+        rospy.sleep(3)
 
     def fnFindLevel(self):
         cv_image_mask = self.fnMaskRedOfLevel()
-
         cv_image_mask = cv2.GaussianBlur(cv_image_mask,(5,5),0)
 
         return self.fnFindRectOfLevel(cv_image_mask)
@@ -300,7 +265,6 @@ class DetectLevel():
 
     def fnFindRectOfLevel(self, mask):
         is_level_detected = False
-        is_level_close = False
         is_level_opened = False
 
         params=cv2.SimpleBlobDetector_Params()
@@ -357,15 +321,9 @@ class DetectLevel():
                 self.stop_bar_count = 4
                 if distance_bar2car > 0.5:
                     is_level_detected = True
-                    self.stop_bar_state = 'slowdown'
-                    self.state = "detected"
-                else:
-                    is_level_close = True
                     self.stop_bar_state = 'stop'
-
-        if self.stop_bar_count > 0:
-            self.stop_bar_count -= 1
-        if self.stop_bar_count <= 0:
+  
+        if len(keypts) <= 0:
             is_level_opened = True
             self.stop_bar_state = 'go'
 
@@ -377,7 +335,7 @@ class DetectLevel():
             # publishes level image in raw type
             self.pub_image_level.publish(self.cvBridge.cv2_to_imgmsg(frame, "bgr8"))
 
-        return is_level_detected, is_level_close, is_level_opened
+        return is_level_detected, is_level_opened
 
     def cbLevelCrossingFinished(self, level_crossing_finished_msg):
         self.is_level_crossing_finished = True

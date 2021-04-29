@@ -39,8 +39,8 @@ class CoreModeDecider():
         self.pub_moving = rospy.Publisher('/control/moving/state', MovingParam, queue_size= 1)
         self.pub_decided_mode = rospy.Publisher('/core/decided_mode', UInt8, queue_size=1)
 
-        self.InvokedObject = Enum('InvokedObject', 'traffic_line traffic_sign')
-        self.TrafficSign = Enum('TrafficSign', 'left right')
+        self.InvokedObject = Enum('InvokedObject', 'traffic_sign')
+        self.TrafficSign = Enum('TrafficSign', 'intersection left right')
         self.CurrentMode = Enum('CurrentMode', 'idle lane_following intersection')
 
         self.fnInitMode()
@@ -71,17 +71,13 @@ class CoreModeDecider():
             rospy.loginfo("lane_following")                
             if invoked_object == self.InvokedObject.traffic_sign.value:   # Any Sign detected
                 rospy.loginfo("Any Sign detected")
-                if msg_data.data == self.TrafficSign.left.value:          # left sign deteced
-                    self.current_mode = self.CurrentMode.intersection.value
-                    rospy.loginfo("detect sign : left_sign")  
-                elif msg_data.data == self.TrafficSign.right.value:       # right sign deteced
-                    self.current_mode = self.CurrentMode.intersection.value
-                    rospy.loginfo("detect sign : right_sign")                
-
+                if msg_data.data == self.TrafficSign.intersection.value:          # intersection sign deteced
+                    self.current_mode = self.CurrentMode.intersection.value 
+                    rospy.loginfo("detect sign : intersection")             
             else:
                 pass
-
             self.fnPublishMode()
+            
         else:
             pass
 

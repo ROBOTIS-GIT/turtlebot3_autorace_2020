@@ -191,8 +191,8 @@ class ControlMoving():
     def fnTurn(self):
         err_theta = self.current_theta - self.desired_theta
         
-        rospy.loginfo("err_theta  desired_theta  current_theta : %f  %f  %f", err_theta, self.desired_theta, self.current_theta)
-        Kp = 0.4
+        # rospy.loginfo("err_theta  desired_theta  current_theta : %f  %f  %f", err_theta, self.desired_theta, self.current_theta)
+        Kp = 0.45
         Kd = 0.03
 
         angular_z = Kp * err_theta + Kd * (err_theta - self.lastError)
@@ -207,7 +207,7 @@ class ControlMoving():
         twist.angular.z = -(angular_z * 2)
         self.pub_cmd_vel.publish(twist)
 
-        rospy.loginfo("angular_z : %f", angular_z)
+        # rospy.loginfo("angular_z : %f", angular_z)
 
         return err_theta
 
@@ -215,8 +215,8 @@ class ControlMoving():
 
         err_pos = math.sqrt((self.current_pos_x - self.start_pos_x) ** 2 + (self.current_pos_y - self.start_pos_y) ** 2) - desired_dist
     
-        rospy.loginfo("error_pos2 = %f", err_pos)
-        Kp = 0.25
+        # rospy.loginfo("error_pos2 = %f", err_pos)
+        Kp = 0.04
         Kd = 0.05
 
         angular_z = Kp * err_pos + Kd * (err_pos - self.lastError)
@@ -225,9 +225,9 @@ class ControlMoving():
         twist = Twist()
 
         if err_pos < 0:
-            twist.linear.x = 0.15 #0.07
+            twist.linear.x = 0.1 #0.07
         else:
-            twist.linear.x = -0.15
+            twist.linear.x = -0.1
 
         twist.linear.y = 0
         twist.linear.z = 0
@@ -243,20 +243,19 @@ class ControlMoving():
 
         err_pos = math.sqrt((self.current_pos_x - self.start_pos_x) ** 2 + (self.current_pos_y - self.start_pos_y) ** 2) - desired_dist
     
-        rospy.loginfo("error_pos = %f", err_pos)
-        Kp = 0.25
+        # rospy.loginfo("error_pos = %f", err_pos)
+        Kp = 0.04
         Kd = 0.05
 
         angular_z = Kp * err_pos + Kd * (err_pos - self.lastError)
         self.lastError = err_pos
 
         twist = Twist()
-
       
         if err_pos < 0:
-            twist.linear.x = -0.15 #0.07
+            twist.linear.x = -0.1 #0.07
         else:
-            twist.linear.x = 0.15
+            twist.linear.x = 0.1
 
         twist.linear.y = 0
         twist.linear.z = 0

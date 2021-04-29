@@ -23,7 +23,6 @@ import rospy
 import numpy as np
 from enum import Enum
 from std_msgs.msg import UInt8
-## from turtlebot3_msgs.msg import movingParam
 
 class CoreModeDecider():
     def __init__(self):
@@ -31,9 +30,9 @@ class CoreModeDecider():
         self.sub_traffic_sign = rospy.Subscriber('/detect/traffic_sign', UInt8, self.cbInvokedByTrafficSign, queue_size=1)
         self.sub_returned_mode = rospy.Subscriber('/core/returned_mode', UInt8, self.cbReturnedMode, queue_size=1)
 
-        self.pub_debug = rospy.Publisher('/core/debug', UInt8, queue_size = 1)
-        # self.pub_moving = rospy.Publisher('/control/moving/state', movingParam, queue_size= 1)
         # publishes : decided mode
+        # self.pub_debug = rospy.Publisher('/core/debug', UInt8, queue_size = 1)
+        # self.pub_moving = rospy.Publisher('/control/moving/state', movingParam, queue_size= 1)
         self.pub_decided_mode = rospy.Publisher('/core/decided_mode', UInt8, queue_size=1)
 
         self.InvokedObject = Enum('InvokedObject', 'traffic_sign')
@@ -41,8 +40,6 @@ class CoreModeDecider():
         self.CurrentMode = Enum('CurrentMode', 'idle lane_following construction')
 
         self.fnInitMode()
-        self.fnInitSelf()
-
 
     # Invoke if traffic sign is detected
     def cbInvokedByTrafficSign(self, traffic_sign_type_msg):
@@ -58,11 +55,6 @@ class CoreModeDecider():
         self.current_mode = self.CurrentMode.lane_following.value
         self.fnPublishMode()
 
-    def fnInitSelf(self):
-        rospy.loginfo("Init")
-        self.current_mode = self.CurrentMode.lane_following.value
-        rospy.loginfo("Current Mode : construction")
-
     def fnDecideMode(self, invoked_object, msg_data):                       # starts only when the traffic sign / traffic light is detected & current_mode is lane_following
         rospy.loginfo("DecideMode")
         if self.current_mode == self.CurrentMode.lane_following.value:
@@ -77,6 +69,8 @@ class CoreModeDecider():
                 pass
 
             self.fnPublishMode()
+        else:
+            pass
 
     def fnPublishMode(self):
         decided_mode = UInt8()
