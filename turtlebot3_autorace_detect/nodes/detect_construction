@@ -214,7 +214,7 @@ class DetectContruction():
         angle_scan = 25
         scan_start = 0 - angle_scan
         scan_end = 0 + angle_scan
-        threshold_distance = 0.25
+        threshold_distance = 0.2
         is_obstacle_detected = False
 
         for i in range(scan_start, scan_end):

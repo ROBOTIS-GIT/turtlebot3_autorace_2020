@@ -115,7 +115,7 @@ class CoreNodeController():
                 self.fnLaunch(self.Launcher.launch_detect_level.value, True)
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
 
-                self.fnLaunch(self.Launcher.launch_control_lane.value, False)
+                self.fnLaunch(self.Launcher.launch_control_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_control_moving.value, True)
                                    
             elif self.current_step_level_crossing == self.StepOfLevelCrossing.exit.value:

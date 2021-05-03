@@ -41,7 +41,6 @@ class ControlIntersection():
         # publisher state
         self.pub_moving = rospy.Publisher('/control/moving/state', MovingParam, queue_size= 1)
         self.pub_intersection_return = rospy.Publisher('/detect/intersection_stamped', UInt8, queue_size=1)
-        self.pub_max_vel = rospy.Publisher('/control/max_vel', Float64, queue_size = 1)
         self.pub_cmd_vel = rospy.Publisher('/control/cmd_vel', Twist, queue_size = 1)
     
         self.StepOfIntersection = Enum('StepOfIntersection', 'detect_direction exit')
@@ -165,11 +164,6 @@ class ControlIntersection():
                                             
         elif order.data == self.StepOfIntersection.exit.value:           
             rospy.loginfo("Now finished")
-
-            msg_pub_max_vel = Float64()
-            msg_pub_max_vel.data = 0.00
-            self.pub_max_vel.publish(msg_pub_max_vel)
-
             rospy.sleep(2)
             msg_pub_intersection_return.data = self.StepOfIntersection.exit.value
 
