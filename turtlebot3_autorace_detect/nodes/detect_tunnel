@@ -29,14 +29,17 @@ from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist, PoseStamped, PoseWithCovarianceStamped
 from nav_msgs.msg import Odometry
 from move_base_msgs.msg import MoveBaseActionResult
+from turtlebot3_autorace_msgs.msg import MovingParam
 
 class DetectTunnel():
     def __init__(self):
         self.sub_tunnel_order = rospy.Subscriber('/detect/tunnel_order', UInt8, self.cbTunnelOrder, queue_size=1)
         self.sub_arrival_status = rospy.Subscriber("/move_base/result", MoveBaseActionResult, self.cbGetNavigationResult, queue_size=1)
         self.sub_odom = rospy.Subscriber('/odom', Odometry, self.cbOdom, queue_size=1)
+        self.sub_moving_completed = rospy.Subscriber('/control/moving/complete', UInt8, self.cbMovingComplete, queue_size = 1)
 
         self.pub_tunnel_return = rospy.Publisher('/detect/tunnel_stamped', UInt8, queue_size=1)
+        self.pub_moving = rospy.Publisher('/control/moving/state', MovingParam, queue_size= 1)
         self.pub_goal_pose_stamped = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=1)
         self.pub_init_pose = rospy.Publisher("/initialpose", PoseWithCovarianceStamped, queue_size=1)
         self.pub_cmd_vel = rospy.Publisher('/control/cmd_vel', Twist, queue_size = 1)
@@ -46,6 +49,7 @@ class DetectTunnel():
 
         self.is_navigation_finished = False
         self.is_tunnel_finished = False
+        self.is_moving_complete = False
 
         self.last_current_theta = 0.0
 
@@ -54,35 +58,64 @@ class DetectTunnel():
             rospy.loginfo("Reached")
             self.is_navigation_finished = True
 
+    def cbMovingComplete(self, data):
+        self.is_moving_complete = True
 
     def cbTunnelOrder(self, order):
         pub_tunnel_return = UInt8()
 
         if order.data == self.StepOfTunnel.searching_tunnel_sign.value:
             rospy.loginfo("Now lane_following")
-
             pub_tunnel_return.data = self.StepOfTunnel.searching_tunnel_sign.value
                             
                                 
         elif order.data == self.StepOfTunnel.go_in_to_tunnel.value:
             rospy.loginfo("Now go_in_to_tunnel")
 
-            self.lastError = 0.0
-            self.start_pos_x = self.current_pos_x
-            self.start_pos_y = self.current_pos_y
+            rospy.sleep(1)
 
+            rospy.loginfo("go straight")
+            msg_moving = MovingParam()
+            msg_moving.moving_type= 4
+            msg_moving.moving_value_angular=0.0
+            msg_moving.moving_value_linear=0.2
+            self.pub_moving.publish(msg_moving)
             while True:
-                error = self.fnStraight(0.3)
-
-                if math.fabs(error) < 0.005:
+                if self.is_moving_complete == True:
                     break
+            self.is_moving_complete = False
 
-            self.fnStop()
+            rospy.sleep(1)
+
+            rospy.loginfo("go left")
+            msg_moving = MovingParam()
+            msg_moving.moving_type=2
+            msg_moving.moving_value_angular=45
+            msg_moving.moving_value_linear=0.0
+            self.pub_moving.publish(msg_moving)
+            while True:
+                if self.is_moving_complete == True:
+                    break
+            self.is_moving_complete = False
+
+            rospy.sleep(1)
+
+            rospy.loginfo("go straight")
+            msg_moving = MovingParam()
+            msg_moving.moving_type= 4
+            msg_moving.moving_value_angular=0.0
+            msg_moving.moving_value_linear=0.15
+            self.pub_moving.publish(msg_moving)
+            while True:
+                if self.is_moving_complete == True:
+                    break
+            self.is_moving_complete = False
+
+            rospy.sleep(1)
 
             rospy.loginfo("go_in_to_tunnel finished")
 
             pub_tunnel_return.data = self.StepOfTunnel.go_in_to_tunnel.value
-
 
         elif order.data == self.StepOfTunnel.navigation.value:
             rospy.loginfo("Now navigation")
@@ -90,8 +123,6 @@ class DetectTunnel():
             initialPose.header.frame_id = "map"
             initialPose.header.stamp = rospy.Time.now()
             initialPose.pose.pose = self.odom_msg.pose.pose
-
-            # self.pub_init_pose.publish(initialPose)
 
             self.fnPubGoalPose()
 
@@ -108,17 +139,18 @@ class DetectTunnel():
         elif order.data == self.StepOfTunnel.go_out_from_tunnel.value:
             rospy.loginfo("Now go_out_from_tunnel")
 
-            self.lastError = 0.0
-            self.start_pos_x = self.current_pos_x
-            self.start_pos_y = self.current_pos_y
-
+            rospy.loginfo("go straight")
+            msg_moving = MovingParam()
+            msg_moving.moving_type= 4
+            msg_moving.moving_value_angular=0.0
+            msg_moving.moving_value_linear=0.45
+            self.pub_moving.publish(msg_moving)
             while True:
-                error = self.fnStraight(0.50)
-
-                if math.fabs(error) < 0.005:
+                if self.is_moving_complete == True:
                     break
+            self.is_moving_complete = False
 
-            self.fnStop()
+            rospy.sleep(1)
 
             pub_tunnel_return.data = self.StepOfTunnel.go_out_from_tunnel.value
 
@@ -155,8 +187,8 @@ class DetectTunnel():
         goalPoseStamped.header.frame_id = "map"
         goalPoseStamped.header.stamp = rospy.Time.now()
 
-        goalPoseStamped.pose.position.x = -0.25
-        goalPoseStamped.pose.position.y = -1.76
+        goalPoseStamped.pose.position.x = -0.3
+        goalPoseStamped.pose.position.y = -1.78
         goalPoseStamped.pose.position.z = 0.0
 
         goalPoseStamped.pose.orientation.x = 0.0
@@ -165,39 +197,6 @@ class DetectTunnel():
         goalPoseStamped.pose.orientation.w = 1.0
 
         self.pub_goal_pose_stamped.publish(goalPoseStamped)
-
-    def fnStraight(self, desired_dist):
-        err_pos = math.sqrt((self.current_pos_x - self.start_pos_x) ** 2 + (self.current_pos_y - self.start_pos_y) ** 2) - desired_dist
-        
-        rospy.loginfo("Tunnel_Straight")
-        rospy.loginfo("err_pos  desired_dist : %f  %f  %f", err_pos, desired_dist, self.lastError)
-
-        Kp = 0.4
-        Kd = 0.05
-
-        angular_z = Kp * err_pos + Kd * (err_pos - self.lastError)
-        self.lastError = err_pos
-
-        twist = Twist()
-        twist.linear.x = 0.07
-        twist.linear.y = 0
-        twist.linear.z = 0
-        twist.angular.x = 0
-        twist.angular.y = 0
-        twist.angular.z = 0
-        self.pub_cmd_vel.publish(twist)
-
-        return err_pos
-
-    def fnStop(self):
-        twist = Twist()
-        twist.linear.x = 0
-        twist.linear.y = 0
-        twist.linear.z = 0
-        twist.angular.x = 0
-        twist.angular.y = 0
-        twist.angular.z = 0
-        self.pub_cmd_vel.publish(twist)
 
     def cbTunnelFinished(self, tunnel_finished_msg):
         self.is_tunnel_finished = True

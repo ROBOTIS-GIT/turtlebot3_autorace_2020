@@ -79,7 +79,7 @@ class DetectParking():
             rospy.loginfo("go left")
             msg_moving = MovingParam()
             msg_moving.moving_type=2
-            msg_moving.moving_value_angular=80
+            msg_moving.moving_value_angular=90
             msg_moving.moving_value_linear=0.0
             self.pub_moving.publish(msg_moving)
             while True:
@@ -191,7 +191,7 @@ class DetectParking():
                 msg_moving = MovingParam()
                 msg_moving.moving_type=4
                 msg_moving.moving_value_angular=0.0
-                msg_moving.moving_value_linear=0.3
+                msg_moving.moving_value_linear=0.2
                 self.pub_moving.publish(msg_moving)
                 while True:
                     if self.is_moving_complete == True:
@@ -284,7 +284,7 @@ class DetectParking():
                 msg_moving = MovingParam()
                 msg_moving.moving_type=4
                 msg_moving.moving_value_angular=0.0
-                msg_moving.moving_value_linear=0.3
+                msg_moving.moving_value_linear=0.2
                 self.pub_moving.publish(msg_moving)
                 while True:
                     if self.is_moving_complete == True:

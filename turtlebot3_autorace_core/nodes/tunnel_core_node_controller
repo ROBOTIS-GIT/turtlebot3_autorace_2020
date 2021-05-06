@@ -47,7 +47,7 @@ class CoreNodeController():
         self.StepOfTunnel = Enum('StepOfTunnel', 'searching_tunnel_sign go_in_to_tunnel navigation go_out_from_tunnel exit')      
         self.current_step_tunnel = self.StepOfTunnel.searching_tunnel_sign.value
 
-        self.Launcher = Enum('Launcher', 'launch_camera_ex_calib launch_detect_sign launch_detect_lane launch_control_lane launch_detect_tunnel launch_control_tunnel launch_control_moving')
+        self.Launcher = Enum('Launcher', 'launch_camera_ex_calib launch_detect_sign launch_detect_lane launch_detect_tunnel launch_control_lane launch_control_tunnel launch_control_moving')
         self.uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
         
         self.launch_camera_launched = False
@@ -56,7 +56,7 @@ class CoreNodeController():
         self.launch_detect_tunnel_launched = False
         self.launch_control_lane_launched = False
         self.launch_control_tunnel_launched = False
-
+        self.launch_control_moving_launched = False
 
         self.is_triggered = False
 
@@ -103,6 +103,7 @@ class CoreNodeController():
 
             self.fnLaunch(self.Launcher.launch_control_lane.value, True)
             self.fnLaunch(self.Launcher.launch_control_tunnel.value, False)
+            self.fnLaunch(self.Launcher.launch_control_moving.value, False)
 
 
         # tunnel
@@ -124,6 +125,7 @@ class CoreNodeController():
 
                 self.fnLaunch(self.Launcher.launch_control_lane.value, False)
                 self.fnLaunch(self.Launcher.launch_control_tunnel.value, False)
+                self.fnLaunch(self.Launcher.launch_control_moving.value, True)
                                    
             elif self.current_step_tunnel == self.StepOfTunnel.go_in_to_tunnel.value:
                 rospy.loginfo("Current step : go_in_to_tunnel")
@@ -139,6 +141,7 @@ class CoreNodeController():
 
                 self.fnLaunch(self.Launcher.launch_control_lane.value, False)
                 self.fnLaunch(self.Launcher.launch_control_tunnel.value, True)
+                self.fnLaunch(self.Launcher.launch_control_moving.value, False)
 
             elif self.current_step_tunnel == self.StepOfTunnel.navigation.value:
                 rospy.loginfo("Current step : navigation")
@@ -154,6 +157,7 @@ class CoreNodeController():
 
                 self.fnLaunch(self.Launcher.launch_control_lane.value, False)
                 self.fnLaunch(self.Launcher.launch_control_tunnel.value, False)
+                self.fnLaunch(self.Launcher.launch_control_moving.value, True)
 
             elif self.current_step_tunnel == self.StepOfTunnel.go_out_from_tunnel.value:
                 rospy.loginfo("Current step : go_out_from_tunnel")
@@ -169,6 +173,7 @@ class CoreNodeController():
              
                 self.fnLaunch(self.Launcher.launch_control_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_control_tunnel.value, False)
+                self.fnLaunch(self.Launcher.launch_control_moving.value, False)
 
             elif self.current_step_tunnel == self.StepOfTunnel.exit.value:
                 rospy.loginfo("Current step : exit")
@@ -184,6 +189,7 @@ class CoreNodeController():
                 
                 self.fnLaunch(self.Launcher.launch_control_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_control_tunnel.value, False)
+                self.fnLaunch(self.Launcher.launch_control_moving.value, False)
                 
             rospy.sleep(2)
 
@@ -256,7 +262,7 @@ class CoreNodeController():
                 else:
                     pass    
 
-       elif launch_num == self.Launcher.launch_control_lane.value:
+        elif launch_num == self.Launcher.launch_control_lane.value:
             if is_start == True:
                 if self.launch_control_lane_launched == False:
                     self.launch_control_lane = roslaunch.scriptapi.ROSLaunch()
@@ -287,6 +293,21 @@ class CoreNodeController():
                     self.launch_control_tunnel.shutdown()
                 else:
                     pass
+
+        elif launch_num == self.Launcher.launch_control_moving.value:
+            if is_start == True:
+                if self.launch_control_moving_launched == False:
+                    self.launch_control_moving = roslaunch.scriptapi.ROSLaunch()
+                    self.launch_control_moving = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_driving/launch/turtlebot3_autorace_control_moving.launch"])
+                    self.launch_control_moving_launched = True
+                    self.launch_control_moving.start()
+                else:
+                    pass
+            else:
+                if self.launch_control_moving_launched == True:
+                    self.launch_control_moving_launched = False
+                    self.launch_control_moving.shutdown()
+                pass
 
     def main(self):
         rospy.spin()

@@ -43,7 +43,6 @@ class CoreModeDecider():
         self.fnInitMode()
         self.fnInitSelf()
 
-
     # Invoke if traffic sign is detected
     def cbInvokedByTrafficSign(self, traffic_sign_type_msg):
         rospy.loginfo("invoke sign")
@@ -71,13 +70,10 @@ class CoreModeDecider():
                 rospy.loginfo("invoked object : traffic sign")
                 if msg_data.data == self.TrafficSign.tunnel.value:      # Tunnel Sign detected
                     rospy.loginfo("traffic sign : tunnel sign")
-                    self.current_mode = self.CurrentMode.tunnel.value
-                
+                    self.current_mode = self.CurrentMode.tunnel.value                
             else:
                 pass
-
-            self.fnPublishMode()            
-        
+            self.fnPublishMode()                    
         else:
             pass
 

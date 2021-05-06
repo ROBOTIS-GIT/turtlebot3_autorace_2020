@@ -118,7 +118,7 @@ class DetectContruction():
             rospy.loginfo("go straight")
             msg_moving.moving_type= 4
             msg_moving.moving_value_angular=0.0
-            msg_moving.moving_value_linear=0.4
+            msg_moving.moving_value_linear=0.5
             self.pub_moving.publish(msg_moving)
             while True:
                 if self.is_moving_complete == True:
@@ -142,7 +142,7 @@ class DetectContruction():
             rospy.loginfo("go straight")
             msg_moving.moving_type= 4
             msg_moving.moving_value_angular=0.0
-            msg_moving.moving_value_linear=0.3
+            msg_moving.moving_value_linear=0.4
             self.pub_moving.publish(msg_moving)
             while True:
                 if self.is_moving_complete == True:
