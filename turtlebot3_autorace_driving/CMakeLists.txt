@@ -39,8 +39,6 @@ catkin_package(
 catkin_install_python(PROGRAMS
   nodes/control_lane
   nodes/control_moving
-  nodes/control_intersection
-  ## nodes/control_parking
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

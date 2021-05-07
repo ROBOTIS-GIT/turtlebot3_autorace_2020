@@ -17,7 +17,7 @@
 # limitations under the License.
 ################################################################################
 
-# Author: Leon Jung, Gilbert
+# Author: Leon Jung, Gilbert, Ashe Kim
 
 import rospy
 import numpy as np
@@ -31,8 +31,6 @@ class CoreModeDecider():
         self.sub_returned_mode = rospy.Subscriber('/core/returned_mode', UInt8, self.cbReturnedMode, queue_size=1)
 
         # publishes : decided mode
-        # self.pub_debug = rospy.Publisher('/core/debug', UInt8, queue_size = 1)
-        # self.pub_moving = rospy.Publisher('/control/moving/state', movingParam, queue_size= 1)
         self.pub_decided_mode = rospy.Publisher('/core/decided_mode', UInt8, queue_size=1)
 
         self.InvokedObject = Enum('InvokedObject', 'traffic_sign')

@@ -17,11 +17,10 @@
 # limitations under the License.
 ################################################################################
 
-# Author: Leon Jung, Gilbert
+# Author: Leon Jung, Gilbert, Ashe Kim
 
 import rospy
 import numpy as np
-import math
 import os
 import cv2
 from enum import Enum
@@ -32,11 +31,11 @@ from cv_bridge import CvBridge, CvBridgeError
 class DetectSign():
     def __init__(self):
         self.fnPreproc()
-
+        
         self.sub_image_type = "raw" # you can choose image type "compressed", "raw"
         self.pub_image_type = "compressed" # you can choose image type "compressed", "raw"
-        self.TrafficSign = Enum('TrafficSign', 'construction')
 
+        #subscribes
         if self.sub_image_type == "compressed":
             # subscribes compressed image
             self.sub_image_original = rospy.Subscriber('/detect/image_input/compressed', CompressedImage, self.cbFindTrafficSign, queue_size = 1)
@@ -44,7 +43,7 @@ class DetectSign():
             # subscribes raw image
             self.sub_image_original = rospy.Subscriber('/detect/image_input', Image, self.cbFindTrafficSign, queue_size = 1)
 
-        # publishes traffic sign
+        # publishes
         self.pub_traffic_sign = rospy.Publisher('/detect/traffic_sign', UInt8, queue_size=1)
         
         if self.pub_image_type == "compressed":
@@ -55,6 +54,7 @@ class DetectSign():
             self.pub_image_traffic_sign = rospy.Publisher('/detect/image_output', Image, queue_size = 1)
 
         self.cvBridge = CvBridge()
+        self.TrafficSign = Enum('TrafficSign', 'construction')
         self.counter = 1
 
     def fnPreproc(self):
@@ -97,7 +97,6 @@ class DetectSign():
             cv_image_input = self.cvBridge.imgmsg_to_cv2(image_msg, "bgr8")
 
         MIN_MATCH_COUNT = 8 #9
-        MIN_MATCH_COUNT_P = 15
         MIN_MSE_DECISION = 50000
 
         # find the keypoints and descriptors with SIFT
@@ -124,8 +123,8 @@ class DetectSign():
                 msg_sign.data = self.TrafficSign.construction.value
 
                 self.pub_traffic_sign.publish(msg_sign)
-                rospy.loginfo("construction")
 
+                rospy.loginfo("construction")
                 image_out_num = 2
         else:
             matches_construction = None

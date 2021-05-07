@@ -17,10 +17,9 @@
 # limitations under the License.
 ################################################################################
 
-# Authors: Leon Jung, [AuTURBO] Kihoon Kim (https://github.com/auturbo), Gilbert
+# Authors: Leon Jung, [AuTURBO] Kihoon Kim (https://github.com/auturbo), Gilbert, Ashe Kim
 
 import rospy, roslaunch
-import numpy as np
 import subprocess
 import os
 import sys
@@ -39,7 +38,6 @@ class CoreNodeController():
         # publishes orders
         self.pub_level_crossing_order = rospy.Publisher('/detect/level_crossing_order', UInt8, queue_size=1)
         self.pub_mode_return = rospy.Publisher('/core/returned_mode', UInt8, queue_size=1)
-        self.pub_timer_start = rospy.Publisher('/detect/timer/start', Float64, queue_size= 1)
 
         self.CurrentMode = Enum('CurrentMode', 'idle lane_following level_crossing')
         self.current_mode = self.CurrentMode.idle.value

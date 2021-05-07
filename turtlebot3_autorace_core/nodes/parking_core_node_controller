@@ -17,10 +17,9 @@
 # limitations under the License.
 ################################################################################
 
-# Authors: Leon Jung, [AuTURBO] Kihoon Kim (https://github.com/auturbo), Gilbert
+# Authors: Leon Jung, [AuTURBO] Kihoon Kim (https://github.com/auturbo), Gilbert, Ashe Kim
 
 import rospy, roslaunch
-import numpy as np
 import subprocess
 import os
 import sys
@@ -39,7 +38,6 @@ class CoreNodeController():
         # publishes orders
         self.pub_parking_order = rospy.Publisher('/detect/parking_order', UInt8, queue_size=1)   
         self.pub_mode_return = rospy.Publisher('/core/returned_mode', UInt8, queue_size=1)
-        self.pub_timer_start = rospy.Publisher('/detect/timer/start', Float64, queue_size= 1)
 
         self.CurrentMode = Enum('CurrentMode', 'idle lane_following parking')
         self.current_mode = self.CurrentMode.idle.value
@@ -72,7 +70,6 @@ class CoreNodeController():
         self.current_mode = mode_msg.data
         self.is_triggered = True
 
-    # Which step is in Parking Mission
     def cbParkingStamped(self, parking_msg):
         rospy.loginfo("Parking Step changed from %d", self.current_step_parking)
         self.current_step_parking = parking_msg.data
@@ -84,7 +81,6 @@ class CoreNodeController():
             self.pub_mode_return.publish(msg_mode_return)
 
         self.is_triggered = True
-
 
     def fnControlNode(self): 
         # lane_following
@@ -113,7 +109,6 @@ class CoreNodeController():
                 msg_pub_parking_order.data = self.StepOfParking.parking.value
 
                 self.fnLaunch(self.Launcher.launch_camera_ex_calib.value, True)
-
 
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_detect_sign.value, False)

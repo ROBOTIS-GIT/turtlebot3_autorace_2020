@@ -17,11 +17,10 @@
 # limitations under the License.
 ################################################################################
 
-# Author: Leon Jung, Gilbert
+# Author: Leon Jung, Gilbert, Ashe Kim
 
 import rospy
 import numpy as np
-import math
 import os
 import cv2
 from enum import Enum
@@ -36,6 +35,7 @@ class DetectSign():
         self.sub_image_type = "raw" # you can choose image type "compressed", "raw"
         self.pub_image_type = "compressed" # you can choose image type "compressed", "raw"
 
+        #subscribes
         if self.sub_image_type == "compressed":
             # subscribes compressed image
             self.sub_image_original = rospy.Subscriber('/detect/image_input/compressed', CompressedImage, self.cbFindTrafficSign, queue_size = 1)
@@ -43,6 +43,7 @@ class DetectSign():
             # subscribes raw image
             self.sub_image_original = rospy.Subscriber('/detect/image_input', Image, self.cbFindTrafficSign, queue_size = 1)
 
+        # publishes
         self.pub_traffic_sign = rospy.Publisher('/detect/traffic_sign', UInt8, queue_size=1)
 
         if self.pub_image_type == "compressed":
@@ -53,9 +54,7 @@ class DetectSign():
             self.pub_image_traffic_sign = rospy.Publisher('/detect/image_output', Image, queue_size = 1)
 
         self.cvBridge = CvBridge()
-
         self.TrafficSign = Enum('TrafficSign', 'tunnel')
-
         self.counter = 1
 
     def fnPreproc(self):
@@ -67,7 +66,6 @@ class DetectSign():
         dir_path += 'image/'
 
         self.img_tunnel = cv2.imread(dir_path + 'tunnel.png',0)       # trainImage3
-
         self.kp_tunnel, self.des_tunnel = self.sift.detectAndCompute(self.img_tunnel,None)
 
         FLANN_INDEX_KDTREE = 0

@@ -17,39 +17,29 @@
 # limitations under the License.
 ################################################################################
 
-# Author: Leon Jung, Gilbert
+# Author: Leon Jung, Gilbert, Ashe Kim
  
 import rospy
-import numpy as np
-import math
-import tf
 import os 
-import cv2
 from enum import Enum
-from std_msgs.msg import UInt8, Float64, String
-from sensor_msgs.msg import LaserScan, Image, CompressedImage
-from geometry_msgs.msg import Twist
-from nav_msgs.msg import Odometry
+from std_msgs.msg import UInt8, Float64
+from sensor_msgs.msg import LaserScan
 from turtlebot3_autorace_msgs.msg import MovingParam
 
 class DetectContruction():
     def __init__(self):
-        # subscribes state : white line reliability
-        self.sub_construction_order = rospy.Subscriber('/detect/construction_order', UInt8, self.cbConstructionOrder, queue_size=1)
+        # subscribes state 
         self.sub_scan_obstacle = rospy.Subscriber('/detect/scan', LaserScan, self.cbScanObstacle, queue_size=1)
-        self.sub_construction_finished = rospy.Subscriber('/control/construction_finished', UInt8, self.cbConstructionFinished, queue_size = 1)
+        self.sub_construction_order = rospy.Subscriber('/detect/construction_order', UInt8, self.cbConstructionOrder, queue_size=1)
         self.sub_moving_completed = rospy.Subscriber('/control/moving/complete', UInt8, self.cbMovingComplete, queue_size = 1)
 
         # publishes state
         self.pub_construction_return = rospy.Publisher('/detect/construction_stamped', UInt8, queue_size=1)
-        self.pub_construction_start = rospy.Publisher('/control/construction_start', UInt8, queue_size = 1)
         self.pub_moving = rospy.Publisher('/control/moving/state', MovingParam, queue_size= 1)
         self.pub_max_vel = rospy.Publisher('/control/max_vel', Float64, queue_size = 1)
-        self.pub_timer_start = rospy.Publisher('/detect/timer/start', Float64, queue_size= 1)
        
         self.StepOfConstruction = Enum('StepOfConstruction', 'find_obstacle avoid_obstacle exit')
         self.is_obstacle_detected = False
-        self.is_construction_finished = False
         self.is_moving_complete = False
 
     def cbMovingComplete(self, data):
@@ -206,9 +196,6 @@ class DetectContruction():
 
         self.pub_construction_return.publish(msg_pub_construction_return)
         rospy.sleep(3)
-
-    def cbConstructionFinished(self, construction_finished_msg):
-        self.is_construction_finished = True
 
     def cbScanObstacle(self, scan):
         angle_scan = 25

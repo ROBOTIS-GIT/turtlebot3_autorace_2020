@@ -17,15 +17,13 @@
 # limitations under the License.
 ################################################################################
 
-# Author: Ryu Woon Jung (Leon), Gilbert
+# Author: Ryu Woon Jung (Leon), Gilbert, Ashe Kim
  
 import rospy
-import numpy as np
 import math
 import tf
 from enum import Enum
-from std_msgs.msg import UInt8, Float64, String
-from sensor_msgs.msg import LaserScan
+from std_msgs.msg import UInt8
 from geometry_msgs.msg import Twist, PoseStamped, PoseWithCovarianceStamped
 from nav_msgs.msg import Odometry
 from move_base_msgs.msg import MoveBaseActionResult
@@ -33,24 +31,21 @@ from turtlebot3_autorace_msgs.msg import MovingParam
 
 class DetectTunnel():
     def __init__(self):
+        # subscribes state 
         self.sub_tunnel_order = rospy.Subscriber('/detect/tunnel_order', UInt8, self.cbTunnelOrder, queue_size=1)
+        self.sub_moving_completed = rospy.Subscriber('/control/moving/complete', UInt8, self.cbMovingComplete, queue_size = 1)
         self.sub_arrival_status = rospy.Subscriber("/move_base/result", MoveBaseActionResult, self.cbGetNavigationResult, queue_size=1)
         self.sub_odom = rospy.Subscriber('/odom', Odometry, self.cbOdom, queue_size=1)
-        self.sub_moving_completed = rospy.Subscriber('/control/moving/complete', UInt8, self.cbMovingComplete, queue_size = 1)
 
+        # publishes state
         self.pub_tunnel_return = rospy.Publisher('/detect/tunnel_stamped', UInt8, queue_size=1)
         self.pub_moving = rospy.Publisher('/control/moving/state', MovingParam, queue_size= 1)
         self.pub_goal_pose_stamped = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=1)
-        self.pub_init_pose = rospy.Publisher("/initialpose", PoseWithCovarianceStamped, queue_size=1)
-        self.pub_cmd_vel = rospy.Publisher('/control/cmd_vel', Twist, queue_size = 1)
-        self.pub_max_vel = rospy.Publisher('/control/max_vel', Float64, queue_size = 1)
 
         self.StepOfTunnel = Enum('StepOfTunnel', 'searching_tunnel_sign go_in_to_tunnel navigation go_out_from_tunnel exit')
-
         self.is_navigation_finished = False
         self.is_tunnel_finished = False
         self.is_moving_complete = False
-
         self.last_current_theta = 0.0
 
     def cbGetNavigationResult(self, msg_nav_result):

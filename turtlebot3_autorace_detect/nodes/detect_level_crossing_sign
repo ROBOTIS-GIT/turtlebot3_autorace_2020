@@ -17,11 +17,10 @@
 # limitations under the License.
 ################################################################################
 
-# Author: Leon Jung, Gilbert
+# Author: Leon Jung, Gilbert, Ashe Kim
 
 import rospy
 import numpy as np
-import math
 import os
 import cv2
 from enum import Enum
@@ -36,6 +35,7 @@ class DetectSign():
         self.sub_image_type = "raw" # you can choose image type "compressed", "raw"
         self.pub_image_type = "compressed" # you can choose image type "compressed", "raw"
 
+        #subscribes
         if self.sub_image_type == "compressed":
             # subscribes compressed image
             self.sub_image_original = rospy.Subscriber('/detect/image_input/compressed', CompressedImage, self.cbFindTrafficSign, queue_size = 1)
@@ -43,6 +43,7 @@ class DetectSign():
             # subscribes raw image
             self.sub_image_original = rospy.Subscriber('/detect/image_input', Image, self.cbFindTrafficSign, queue_size = 1)
 
+        # publishes
         self.pub_traffic_sign = rospy.Publisher('/detect/traffic_sign', UInt8, queue_size=1)
 
         if self.pub_image_type == "compressed":
@@ -96,7 +97,6 @@ class DetectSign():
             cv_image_input = self.cvBridge.imgmsg_to_cv2(image_msg, "bgr8")
 
         MIN_MATCH_COUNT = 4 #9
-        MIN_MATCH_COUNT_P = 15
         MIN_MSE_DECISION = 50000
 
         # find the keypoints and descriptors with SIFT
@@ -156,7 +156,6 @@ class DetectSign():
             elif self.pub_image_type == "raw":
                 # publishes traffic sign image in raw type
                 self.pub_image_traffic_sign.publish(self.cvBridge.cv2_to_imgmsg(final_stop, "bgr8"))             
-
 
     def main(self):
         rospy.spin()

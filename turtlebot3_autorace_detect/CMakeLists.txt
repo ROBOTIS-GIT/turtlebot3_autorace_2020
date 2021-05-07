@@ -46,6 +46,7 @@ catkin_package(
 catkin_install_python(PROGRAMS
   nodes/detect_construction
   nodes/detect_construction_sign
+  nodes/detect_intersection
   nodes/detect_intersection_sign
   nodes/detect_lane
   nodes/detect_level_crossing

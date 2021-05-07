@@ -17,18 +17,15 @@
 # limitations under the License.
 ################################################################################
 
-# Authors: Leon Jung, [AuTURBO] Kihoon Kim (https://github.com/auturbo), Gilbert
+# Authors: Leon Jung, [AuTURBO] Kihoon Kim (https://github.com/auturbo), Gilbert, Ashe Kim
  
 import rospy
 import numpy as np
 import cv2
 import math
-import tf
 from enum import Enum
 from std_msgs.msg import UInt8, Float64
 from sensor_msgs.msg import Image, CompressedImage
-from geometry_msgs.msg import Twist
-from nav_msgs.msg import Odometry
 from cv_bridge import CvBridge, CvBridgeError
 from dynamic_reconfigure.server import Server
 from turtlebot3_autorace_detect.cfg import DetectLevelParamsConfig
@@ -267,7 +264,6 @@ class DetectLevel():
 
         return mask
 
-
     def fnFindRectOfLevel(self, mask):
         is_level_detected = False
         is_level_close = False
@@ -323,9 +319,6 @@ class DetectLevel():
                 # finding the angle of line
                 distance_bar2car = 50 / fnCalcDistanceDot2Dot(point1[0], point1[1], point2[0], point2[1])
 
-                # rospy.loginfo("distance_bar2car!!!!!!!!!!!!!!!!!")
-                # rospy.loginfo(distance_bar2car)
-
                 self.stop_bar_count = 50
                 if distance_bar2car > 1.0:
                     is_level_detected = True
@@ -337,13 +330,6 @@ class DetectLevel():
         elif len(keypts) <= 1:
             is_level_opened = True
             self.stop_bar_state = 'go'
-
-        # if self.stop_bar_count > 0:
-        #     self.stop_bar_count -= 1
-
-        # if self.stop_bar_count == 0:
-        #     is_level_opened = True
-        #     self.stop_bar_state = 'go'
 
         if self.pub_image_type == "compressed":
             # publishes level image in compressed type

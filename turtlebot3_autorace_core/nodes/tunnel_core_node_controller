@@ -17,10 +17,9 @@
 # limitations under the License.
 ################################################################################
 
-# Authors: Leon Jung, [AuTURBO] Kihoon Kim (https://github.com/auturbo), Gilbert
+# Authors: Leon Jung, [AuTURBO] Kihoon Kim (https://github.com/auturbo), Gilbert, Ashe Kim
 
 import rospy, roslaunch
-import numpy as np
 import subprocess
 import os
 import sys
@@ -33,13 +32,12 @@ class CoreNodeController():
         self.ros_package_path = self.ros_package_path.replace('turtlebot3_autorace_core/nodes', '')
 
         # subscribes : status returned
-        self.sub_mode_control = rospy.Subscriber('/core/decided_mode', UInt8, self.cbReceiveMode, queue_size=1)
         self.sub_tunnel_stamped = rospy.Subscriber('/detect/tunnel_stamped', UInt8, self.cbTunnelStamped, queue_size=1)
+        self.sub_mode_control = rospy.Subscriber('/core/decided_mode', UInt8, self.cbReceiveMode, queue_size=1)
    
         # publishes orders
         self.pub_tunnel_order = rospy.Publisher('/detect/tunnel_order', UInt8, queue_size=1)
         self.pub_mode_return = rospy.Publisher('/core/returned_mode', UInt8, queue_size=1)
-        self.pub_timer_start = rospy.Publisher('/detect/timer/start', Float64, queue_size= 1)
 
         self.CurrentMode = Enum('CurrentMode', 'idle lane_following tunnel')
         self.current_mode = self.CurrentMode.idle.value

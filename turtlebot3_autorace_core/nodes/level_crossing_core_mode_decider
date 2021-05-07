@@ -17,32 +17,27 @@
 # limitations under the License.
 ################################################################################
 
-# Author: Leon Jung, Gilbert
+# Author: Leon Jung, Gilbert, Ashe Kim
 
 import rospy
 import numpy as np
 from enum import Enum
 from std_msgs.msg import UInt8
-## from turtlebot3_msgs.msg import movingParam
 
 class CoreModeDecider():
-    def __init__(self):
-        
+    def __init__(self):        
         # subscribes : invoking object detected
         self.sub_traffic_sign = rospy.Subscriber('/detect/traffic_sign', UInt8, self.cbInvokedByTrafficSign, queue_size=1)
         self.sub_returned_mode = rospy.Subscriber('/core/returned_mode', UInt8, self.cbReturnedMode, queue_size=1)
 
         # publishes : decided mode
-        self.pub_debug = rospy.Publisher('/core/debug', UInt8, queue_size = 1)
         self.pub_decided_mode = rospy.Publisher('/core/decided_mode', UInt8, queue_size=1)
-        # self.pub_moving = rospy.Publisher('/control/moving/state', movingParam, queue_size= 1)
 
         self.InvokedObject = Enum('InvokedObject', 'traffic_sign')
         self.TrafficSign = Enum('TrafficSign', 'stop')
         self.CurrentMode = Enum('CurrentMode', 'idle lane_following level_crossing')
 
         self.fnInitMode()
-        self.fnInitSelf()
 
     # Invoke if traffic sign is detected
     def cbInvokedByTrafficSign(self, traffic_sign_type_msg):
@@ -58,19 +53,14 @@ class CoreModeDecider():
         self.current_mode = self.CurrentMode.lane_following.value
         self.fnPublishMode()
 
-    def fnInitSelf(self):
-        rospy.loginfo("Init")
-        self.current_mode = self.CurrentMode.lane_following.value
-        rospy.loginfo("Current Mode : lane_following")
-
     def fnDecideMode(self, invoked_object, msg_data):                       # starts only when the traffic sign / traffic light is detected & current_mode is lane_following
-        rospy.loginfo("lane_following")
         if self.current_mode == self.CurrentMode.lane_following.value:      
+        rospy.loginfo("lane_following")
             if invoked_object == self.InvokedObject.traffic_sign.value:   # Any Sign detected
                 rospy.loginfo("traffic sign")
                 if msg_data.data == self.TrafficSign.stop.value:            # Stop Sign detected
-                    rospy.loginfo("level crossing")
                     self.current_mode = self.CurrentMode.level_crossing.value
+                    rospy.loginfo("level crossing")
                 
             else:
                 pass

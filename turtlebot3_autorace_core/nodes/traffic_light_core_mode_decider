@@ -17,7 +17,7 @@
 # limitations under the License.
 ################################################################################
 
-# Author: Leon Jung, Gilbert
+# Author: Leon Jung, Gilbert, Ashe Kim
 
 import rospy
 import numpy as np
@@ -31,7 +31,6 @@ class CoreModeDecider():
         self.sub_traffic_light = rospy.Subscriber('/detect/traffic_light', UInt8, self.cbInvokedByTrafficLight, queue_size=1)
         self.sub_returned_mode = rospy.Subscriber('/core/returned_mode', UInt8, self.cbReturnedMode, queue_size=1)
 
-        self.pub_debug = rospy.Publisher('/core/debug', UInt8, queue_size = 1)
         # publishes : decided mode
         self.pub_decided_mode = rospy.Publisher('/core/decided_mode', UInt8, queue_size=1)
 
@@ -39,7 +38,6 @@ class CoreModeDecider():
         self.CurrentMode = Enum('CurrentMode', 'idle lane_following traffic_light')
 
         self.fnInitMode()
-        self.fnInitSelf()
 
       # Invoke if traffic light is detected
     def cbInvokedByTrafficLight(self, traffic_light_type_msg):
@@ -54,11 +52,6 @@ class CoreModeDecider():
     def fnInitMode(self):                                                   # starts only when the program is started initially or any mission is completed
         self.current_mode = self.CurrentMode.lane_following.value
         self.fnPublishMode()
-
-    def fnInitSelf(self):
-        rospy.loginfo("Init")
-        self.current_mode = self.CurrentMode.traffic_light.value
-        rospy.loginfo("Current Mode : Traffic Light")
 
     def fnDecideMode(self, invoked_object, msg_data):                       # starts only when the traffic sign / traffic light is detected & current_mode is lane_following
         if self.current_mode == self.CurrentMode.lane_following.value:

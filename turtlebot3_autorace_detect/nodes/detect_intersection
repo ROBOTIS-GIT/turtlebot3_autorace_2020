@@ -17,20 +17,15 @@
 # limitations under the License.
 ################################################################################
 
-# Author: Leon Jung, Gilbert
+# Author: Leon Jung, Gilbert, Ashe Kim
  
 import rospy
-import numpy as np
-import math
-import tf
 import os 
 from enum import Enum
-from std_msgs.msg import UInt8, Float64, String
-from geometry_msgs.msg import Twist
-from nav_msgs.msg import Odometry
+from std_msgs.msg import UInt8
 from turtlebot3_autorace_msgs.msg import MovingParam
 
-class ControlIntersection():
+class DetectIntersection():
     def __init__(self):
    
         # subscribes state
@@ -39,9 +34,8 @@ class ControlIntersection():
         self.sub_moving_completed = rospy.Subscriber('/control/moving/complete', UInt8, self.cbMovingComplete, queue_size = 1)
 
         # publisher state
-        self.pub_moving = rospy.Publisher('/control/moving/state', MovingParam, queue_size= 1)
         self.pub_intersection_return = rospy.Publisher('/detect/intersection_stamped', UInt8, queue_size=1)
-        self.pub_cmd_vel = rospy.Publisher('/control/cmd_vel', Twist, queue_size = 1)
+        self.pub_moving = rospy.Publisher('/control/moving/state', MovingParam, queue_size= 1)
     
         self.StepOfIntersection = Enum('StepOfIntersection', 'detect_direction exit')
         self.TrafficSign = Enum('TrafficSign', 'intersection left right')   
@@ -54,12 +48,10 @@ class ControlIntersection():
     def cbInvokedByTrafficSign(self, traffic_sign_type_msg):    
         if self.is_intersection_detected == True:
             if traffic_sign_type_msg.data == self.TrafficSign.left.value:
-                # rospy.loginfo("left detecte")
                 self.is_left_detected = True
                 self.is_right_detected = False
 
             elif traffic_sign_type_msg.data == self.TrafficSign.right.value:  
-                # rospy.loginfo("right detected")
                 self.is_right_detected = True
                 self.is_left_detected = False
             self.is_intersection_detected == False
@@ -174,6 +166,6 @@ class ControlIntersection():
         rospy.spin()
 
 if __name__ == '__main__':
-    rospy.init_node('control_intersection')
-    node = ControlIntersection()
+    rospy.init_node('detect_intersection')
+    node = DetectIntersection()
     node.main()

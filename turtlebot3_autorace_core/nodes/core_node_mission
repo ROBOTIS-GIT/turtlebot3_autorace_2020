@@ -17,7 +17,7 @@
 # limitations under the License.
 #################################################################################
 
-# Authors: Gilbert, Ashekim #
+# Authors: Gilbert, Ashe kim
 
 import rospy
 import os

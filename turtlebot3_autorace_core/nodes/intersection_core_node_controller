@@ -17,10 +17,9 @@
 # limitations under the License.
 ################################################################################
 
-# Authors: Leon Jung, [AuTURBO] Kihoon Kim (https://github.com/auturbo), Gilbert
+# Authors: Leon Jung, [AuTURBO] Kihoon Kim (https://github.com/auturbo), Gilbert, Ashe Kim
 
 import rospy, roslaunch
-import numpy as np
 import subprocess
 import os
 import sys
@@ -39,7 +38,6 @@ class CoreNodeController():
         # publishes orders
         self.pub_intersection_order = rospy.Publisher('/detect/intersection_order', UInt8, queue_size=1)
         self.pub_mode_return = rospy.Publisher('/core/returned_mode', UInt8, queue_size=1)
-        self.pub_timer_start = rospy.Publisher('/detect/timer/start', Float64, queue_size= 1)
         
         self.CurrentMode = Enum('CurrentMode', 'idle lane_following intersection')
         self.current_mode = self.CurrentMode.idle.value
@@ -47,15 +45,15 @@ class CoreNodeController():
         self.StepOfIntersection = Enum('StepOfIntersection', 'detect_direction exit')
         self.current_step_intersection = self.StepOfIntersection.detect_direction.value
         
-        self.Launcher = Enum('Launcher', 'launch_camera_ex_calib launch_detect_sign launch_detect_lane launch_control_lane launch_control_intersection launch_control_moving')
+        self.Launcher = Enum('Launcher', 'launch_camera_ex_calib launch_detect_sign launch_detect_lane launch_detect_intersection launch_control_lane launch_control_moving')
         self.uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
         
         self.launch_camera_launched = False
         self.launch_detect_sign_launched = False
         self.launch_detect_lane_launched = False    
+        self.launch_detect_intersection_launched = False
         self.launch_control_lane_launched = False
         self.launch_control_moving_launched = False
-        self.launch_control_intersection_launched = False
 
         self.is_triggered = False
 
@@ -92,9 +90,9 @@ class CoreNodeController():
 
             self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
             self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
+            self.fnLaunch(self.Launcher.launch_detect_intersection.value, False)
 
             self.fnLaunch(self.Launcher.launch_control_lane.value, True)
-            self.fnLaunch(self.Launcher.launch_control_intersection.value, False)
             self.fnLaunch(self.Launcher.launch_control_moving.value, False)
 
         # intersection
@@ -110,10 +108,10 @@ class CoreNodeController():
 
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
+                self.fnLaunch(self.Launcher.launch_detect_intersection.value, True)
 
                 self.fnLaunch(self.Launcher.launch_control_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_control_moving.value, True)
-                self.fnLaunch(self.Launcher.launch_control_intersection.value, True)
               
             elif self.current_step_intersection == self.StepOfIntersection.exit.value:
                 rospy.loginfo("Current step : exit")
@@ -122,10 +120,10 @@ class CoreNodeController():
 
                 self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_detect_sign.value, True)
+                self.fnLaunch(self.Launcher.launch_detect_intersection.value, False)
                
                 self.fnLaunch(self.Launcher.launch_control_lane.value, True)
                 self.fnLaunch(self.Launcher.launch_control_moving.value, False)
-                self.fnLaunch(self.Launcher.launch_control_intersection.value, False)
 
             rospy.sleep(3)
             self.pub_intersection_order.publish(msg_pub_intersection_order)
@@ -175,7 +173,23 @@ class CoreNodeController():
                     self.launch_detect_lane_launched = False
                     self.launch_detect_lane.shutdown()
                 else:
-                    pass                  
+                    pass
+
+        elif launch_num == self.Launcher.launch_detect_intersection.value:
+            if is_start == True:
+                if self.launch_detect_intersection_launched == False:
+                    self.launch_detect_intersection = roslaunch.scriptapi.ROSLaunch()
+                    self.launch_detect_intersection = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_detect/launch/turtlebot3_autorace_detect_intersection.launch"])
+                    self.launch_detect_intersection_launched = True
+                    self.launch_detect_intersection.start()
+                else:
+                    pass
+            else:
+                if self.launch_detect_intersection_launched == True:
+                    self.launch_detect_intersection_launched = False
+                    self.launch_detect_intersection.shutdown()
+                pass
+
         elif launch_num == self.Launcher.launch_control_lane.value:
             if is_start == True:
                 if self.launch_control_lane_launched == False:
@@ -204,21 +218,6 @@ class CoreNodeController():
                 if self.launch_control_moving_launched == True:
                     self.launch_control_moving_launched = False
                     self.launch_control_moving.shutdown()
-                pass
-
-        elif launch_num == self.Launcher.launch_control_intersection.value:
-            if is_start == True:
-                if self.launch_control_intersection_launched == False:
-                    self.launch_control_intersection = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_control_intersection = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_driving/launch/turtlebot3_autorace_control_intersection.launch"])
-                    self.launch_control_intersection_launched = True
-                    self.launch_control_intersection.start()
-                else:
-                    pass
-            else:
-                if self.launch_control_intersection_launched == True:
-                    self.launch_control_intersection_launched = False
-                    self.launch_control_intersection.shutdown()
                 pass
 
     def main(self):

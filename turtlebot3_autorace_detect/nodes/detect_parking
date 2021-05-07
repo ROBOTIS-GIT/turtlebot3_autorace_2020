@@ -17,30 +17,25 @@
 # limitations under the License.
 ################################################################################
 
-# Author: Leon Jung, Gilbert
+# Author: Leon Jung, Gilbert, Ashe Kim
  
 import rospy
-import numpy as np
-import math
-import tf
 import os
 from enum import Enum
-from std_msgs.msg import UInt8, Float64, String
+from std_msgs.msg import UInt8, Float64
 from sensor_msgs.msg import LaserScan
-from geometry_msgs.msg import Twist
-from nav_msgs.msg import Odometry
 from turtlebot3_autorace_msgs.msg import MovingParam
 
 class DetectParking():
     def __init__(self):
-        # subscribes state : white line reliability
-        self.sub_parking_order = rospy.Subscriber('/detect/parking_order', UInt8, self.cbParkingOrder, queue_size=1)
+        # subscribes state 
         self.sub_scan_obstacle = rospy.Subscriber('/detect/scan', LaserScan, self.cbScanObstacle, queue_size=1)
+        self.sub_parking_order = rospy.Subscriber('/detect/parking_order', UInt8, self.cbParkingOrder, queue_size=1)
         self.sub_moving_completed = rospy.Subscriber('/control/moving/complete', UInt8, self.cbMovingComplete, queue_size = 1)
         
         # publishes state
-        self.pub_moving = rospy.Publisher('/control/moving/state', MovingParam, queue_size= 1)
         self.pub_parking_return = rospy.Publisher('/detect/parking_stamped', UInt8, queue_size=1)
+        self.pub_moving = rospy.Publisher('/control/moving/state', MovingParam, queue_size= 1)
         self.pub_max_vel = rospy.Publisher('/control/max_vel', Float64, queue_size = 1)
 
         self.StepOfParking = Enum('StepOfParking', 'parking exit')

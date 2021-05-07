@@ -17,10 +17,9 @@
 # limitations under the License.
 ################################################################################
 
-# Author: Leon Jung, Gilbert
+# Author: Leon Jung, Gilbert, Ashe Kim
 
 import rospy
-import numpy as np
 from enum import Enum
 from std_msgs.msg import UInt8
 
