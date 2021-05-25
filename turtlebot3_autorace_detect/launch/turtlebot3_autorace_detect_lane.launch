@@ -1,5 +1,5 @@
 <launch>
-  <!-- launch turtlebot3_autorace_extrinsic_camera_calibration.launch before launch this file -->
+  <!-- launch extrinsic_camera_calibration.launch before launch this file -->
   <arg name="calibration_mode" default="$(env AUTO_DT_CALIB)" doc="calibration_mode type [calibration, action]"/>
 
   <!-- lane detection -->

@@ -133,7 +133,7 @@ class CoreNodeController():
             if is_start == True:
                 if self.launch_camera_launched == False:
                     self.launch_camera = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_camera = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_camera/launch/turtlebot3_autorace_extrinsic_camera_calibration.launch"])
+                    self.launch_camera = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_camera/launch/extrinsic_camera_calibration.launch"])
                     self.launch_camera_launched = True
                     self.launch_camera.start()
                 else:
