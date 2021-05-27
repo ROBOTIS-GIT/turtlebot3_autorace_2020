@@ -148,7 +148,7 @@ class CoreNodeController():
             if is_start == True:
                 if self.launch_detect_sign_launched == False:
                     self.launch_detect_sign = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_detect_sign = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_detect/launch/turtlebot3_autorace_detect_sign.launch"])
+                    self.launch_detect_sign = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_detect/launch/detect_sign.launch"])
                     self.launch_detect_sign_launched = True
                     self.launch_detect_sign.start()
                 else:
@@ -163,7 +163,7 @@ class CoreNodeController():
             if is_start == True:
                 if self.launch_detect_lane_launched == False:
                     self.launch_detect_lane = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_detect_lane = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_detect/launch/turtlebot3_autorace_detect_lane.launch"])
+                    self.launch_detect_lane = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_detect/launch/detect_lane.launch"])
                     self.launch_detect_lane_launched = True
                     self.launch_detect_lane.start()
                 else:
@@ -179,7 +179,7 @@ class CoreNodeController():
             if is_start == True:
                 if self.launch_detect_intersection_launched == False:
                     self.launch_detect_intersection = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_detect_intersection = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_detect/launch/turtlebot3_autorace_detect_intersection.launch"])
+                    self.launch_detect_intersection = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_detect/launch/detect_intersection.launch"])
                     self.launch_detect_intersection_launched = True
                     self.launch_detect_intersection.start()
                 else:

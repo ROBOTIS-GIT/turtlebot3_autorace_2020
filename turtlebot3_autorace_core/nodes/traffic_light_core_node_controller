@@ -132,7 +132,7 @@ class CoreNodeController():
             if is_start == True:
                 if self.launch_detect_lane_launched == False:
                     self.launch_detect_lane = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_detect_lane = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_detect/launch/turtlebot3_autorace_detect_lane.launch"])
+                    self.launch_detect_lane = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_detect/launch/detect_lane.launch"])
                     self.launch_detect_lane_launched = True
                     self.launch_detect_lane.start()
                 else:
@@ -148,7 +148,7 @@ class CoreNodeController():
             if is_start == True:
                 if self.launch_detect_traffic_light_launched == False:
                     self.launch_detect_traffic_light = roslaunch.scriptapi.ROSLaunch()
-                    self.launch_detect_traffic_light = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_detect/launch/turtlebot3_autorace_detect_traffic_light.launch"])     
+                    self.launch_detect_traffic_light = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_detect/launch/traffic_light.launch"])     
                     self.launch_detect_traffic_light_launched = True
                     self.launch_detect_traffic_light.start()
                 else:

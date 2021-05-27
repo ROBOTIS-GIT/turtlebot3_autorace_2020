@@ -54,12 +54,14 @@ class ControlMission():
 
     def loadMissionModel(self):
         model_dir_path = os.path.dirname(os.path.realpath(__file__))
-        model_dir_path = model_dir_path.replace('/turtlebot3_autorace_2020/turtlebot3_autorace_core/nodes',
-                                              '/turtlebot3_simulations/turtlebot3_gazebo/models/turtlebot3_autorace_2020')
+        model_dir_path = model_dir_path.replace(
+            '/turtlebot3_autorace_2020/turtlebot3_autorace_core/nodes',
+            '/turtlebot3_simulations/turtlebot3_gazebo/models/turtlebot3_autorace_2020')
 
         turtlebot_dir_path = os.path.dirname(os.path.realpath(__file__))
-        turtlebot_dir_path = turtlebot_dir_path.replace('/turtlebot3_autorace_2020/turtlebot3_autorace_core/nodes',
-                                                '/turtlebot3_simulations/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf')
+        turtlebot_dir_path = turtlebot_dir_path.replace(
+            '/turtlebot3_autorace_2020/turtlebot3_autorace_core/nodes',
+            '/turtlebot3_simulations/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf')
 
         red_light_path = model_dir_path + '/traffic_light_red/model.sdf'
         red_light_model = open(red_light_path,'r')
@@ -95,9 +97,24 @@ class ControlMission():
     def setTraffic(self):
         rospy.wait_for_service('gazebo/spawn_sdf_model')
         spawn_model_prox = rospy.ServiceProxy('gazebo/spawn_sdf_model', SpawnModel)
-        spawn_model_prox('traffic_left', self.traffic_left_model, "robotos_name_space", self.initial_pose, "world")
-        spawn_model_prox('traffic_right', self.traffic_right_model, "robotos_name_space", self.initial_pose, "world")
-        spawn_model_prox('down_bar', self.down_bar_model, "robotos_name_space", self.initial_pose, "world")
+        spawn_model_prox(
+            'traffic_left',
+            self.traffic_left_model,
+            "robotos_name_space",
+            self.initial_pose,
+            "world")
+        spawn_model_prox(
+            'traffic_right',
+            self.traffic_right_model,
+            "robotos_name_space",
+            self.initial_pose,
+            "world")
+        spawn_model_prox(
+            'down_bar',
+            self.down_bar_model,
+            "robotos_name_space",
+            self.initial_pose,
+            "world")
 
         parking_pose = Pose()
         parking_stop = np.random.rand()
@@ -108,16 +125,26 @@ class ControlMission():
         parking_pose.orientation.y = 0
         parking_pose.orientation.z = -1
         parking_pose.orientation.w = -1
-        spawn_model_prox('praking_turtlebot3', self.parking_model, "robotos_name_space", parking_pose, "world")
+        spawn_model_prox(
+            'praking_turtlebot3',
+            self.parking_model,
+            "robotos_name_space",
+            parking_pose,
+            "world")
 
     def controlMission(self):
         while not rospy.is_shutdown():
             if self.traffic_state == 1:  # turn on red light
                 rospy.wait_for_service('gazebo/spawn_sdf_model')
-                
+
                 spawn_model_prox = rospy.ServiceProxy('gazebo/spawn_sdf_model', SpawnModel)
-                spawn_model_prox('traffic_light_red', self.red_light_model, "robotos_name_space", self.initial_pose, "world")
-                
+                spawn_model_prox(
+                    'traffic_light_red',
+                    self.red_light_model,
+                    "robotos_name_space",
+                    self.initial_pose,
+                    "world")
+
                 self.traffic_state = 2
                 self.current_time = time.time()
 
@@ -125,8 +152,13 @@ class ControlMission():
                 if abs(self.current_time - time.time()) > 2:  # turn on yellow light after 3s.
                     rospy.wait_for_service('gazebo/spawn_sdf_model')
                     spawn_model_prox = rospy.ServiceProxy('gazebo/spawn_sdf_model', SpawnModel)
-                    spawn_model_prox('traffic_light_yellow', self.yellow_light_model, "robotos_name_space",
-                                     self.initial_pose, "world")
+                    spawn_model_prox(
+                        'traffic_light_yellow',
+                        self.yellow_light_model,
+                        "robotos_name_space",
+                        self.initial_pose,
+                        "world")
+
                     del_model_prox = rospy.ServiceProxy('gazebo/delete_model', DeleteModel)
                     del_model_prox('traffic_light_red')
                     self.traffic_state = 3
