@@ -1,0 +1,5 @@
+<launch>
+  <arg name="mission" default="traffic_light" doc="mission type [traffic_light, intersection, construction, parking, level_crossing, tunnel]"/>
+    <node pkg="turtlebot3_autorace_core" type="$(arg mission)_core_node_controller" name="$(arg mission)_core_node_controller" output="screen"/>
+    <node pkg="turtlebot3_autorace_core" type="$(arg mission)_core_mode_decider" name="$(arg mission)_core_mode_decider" output="screen"/>
+</launch>

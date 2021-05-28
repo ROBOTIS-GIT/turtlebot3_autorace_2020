@@ -1,4 +1,0 @@
-<launch>
-  <node pkg="turtlebot3_autorace_construction_control" type="control_moving" name="control_moving" output="screen">
-  </node>
-</launch>

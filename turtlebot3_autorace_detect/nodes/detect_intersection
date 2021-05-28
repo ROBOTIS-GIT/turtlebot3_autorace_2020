@@ -1,0 +1,171 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+################################################################################
+# Copyright 2018 ROBOTIS CO., LTD.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+################################################################################
+
+# Author: Leon Jung, Gilbert, Ashe Kim
+ 
+import rospy
+import os 
+from enum import Enum
+from std_msgs.msg import UInt8
+from turtlebot3_autorace_msgs.msg import MovingParam
+
+class DetectIntersection():
+    def __init__(self):
+   
+        # subscribes state
+        self.sub_traffic_sign = rospy.Subscriber('/detect/traffic_sign', UInt8, self.cbInvokedByTrafficSign, queue_size=1)
+        self.sub_intersection_order = rospy.Subscriber('/detect/intersection_order', UInt8, self.cbIntersectionOrder, queue_size=1)
+        self.sub_moving_completed = rospy.Subscriber('/control/moving/complete', UInt8, self.cbMovingComplete, queue_size = 1)
+
+        # publisher state
+        self.pub_intersection_return = rospy.Publisher('/detect/intersection_stamped', UInt8, queue_size=1)
+        self.pub_moving = rospy.Publisher('/control/moving/state', MovingParam, queue_size= 1)
+    
+        self.StepOfIntersection = Enum('StepOfIntersection', 'detect_direction exit')
+        self.TrafficSign = Enum('TrafficSign', 'intersection left right')   
+
+        self.is_moving_complete = False
+        self.is_intersection_detected = False
+        self.is_left_detected = False
+        self.is_right_detected = False
+
+    def cbInvokedByTrafficSign(self, traffic_sign_type_msg):    
+        if self.is_intersection_detected == True:
+            if traffic_sign_type_msg.data == self.TrafficSign.left.value:
+                self.is_left_detected = True
+                self.is_right_detected = False
+
+            elif traffic_sign_type_msg.data == self.TrafficSign.right.value:  
+                self.is_right_detected = True
+                self.is_left_detected = False
+            self.is_intersection_detected == False
+
+    def cbMovingComplete(self, data):
+        self.is_moving_complete = True
+   
+    def cbIntersectionOrder(self, order):
+        msg_pub_intersection_return = UInt8()
+     
+        if order.data == self.StepOfIntersection.detect_direction.value:
+
+            self.is_intersection_detected = True
+            while True:
+                if self.is_left_detected == True or self.is_right_detected == True:
+                    break
+       
+            if self.is_right_detected == True:
+
+                rospy.loginfo("go straight")
+                msg_moving = MovingParam()
+                msg_moving.moving_type=4
+                msg_moving.moving_value_angular=0
+                msg_moving.moving_value_linear=0.15
+                self.pub_moving.publish(msg_moving)
+                while True:
+                    if self.is_moving_complete == True:
+                        break
+                self.is_moving_complete = False
+
+                rospy.sleep(1)
+
+                rospy.loginfo("go right")
+                msg_moving = MovingParam()
+                msg_moving.moving_type=3
+                msg_moving.moving_value_angular=45
+                msg_moving.moving_value_linear=0.0
+                self.pub_moving.publish(msg_moving)
+                while True:
+                    if self.is_moving_complete == True:
+                        break
+                self.is_moving_complete = False
+
+                rospy.sleep(1)
+
+                rospy.loginfo("go straight")
+                msg_moving = MovingParam()
+                msg_moving.moving_type=4
+                msg_moving.moving_value_angular=0
+                msg_moving.moving_value_linear=0.1
+                self.pub_moving.publish(msg_moving)
+                while True:
+                    if self.is_moving_complete == True:
+                        break
+                self.is_moving_complete = False
+
+                rospy.sleep(1)
+                  
+            elif self.is_left_detected == True:
+
+                rospy.loginfo("go straight")
+                msg_moving = MovingParam()
+                msg_moving.moving_type=4
+                msg_moving.moving_value_angular=0
+                msg_moving.moving_value_linear=0.15
+                self.pub_moving.publish(msg_moving)
+                while True:
+                    if self.is_moving_complete == True:
+                        break
+                self.is_moving_complete = False
+
+                rospy.sleep(1)
+            
+                rospy.loginfo("go left")
+                msg_moving = MovingParam()
+                msg_moving.moving_type=2
+                msg_moving.moving_value_angular=85
+                msg_moving.moving_value_linear=0.0
+                self.pub_moving.publish(msg_moving)
+                while True:
+                    if self.is_moving_complete == True:
+                        break
+                self.is_moving_complete = False
+
+                rospy.sleep(1)
+
+                rospy.loginfo("go straight")
+                msg_moving = MovingParam()
+                msg_moving.moving_type=4
+                msg_moving.moving_value_angular=0
+                msg_moving.moving_value_linear=0.2
+                self.pub_moving.publish(msg_moving)
+                while True:
+                    if self.is_moving_complete == True:
+                        break
+                self.is_moving_complete = False
+
+                rospy.sleep(1)
+
+            rospy.loginfo("moving finished")
+            msg_pub_intersection_return.data = self.StepOfIntersection.exit.value
+                                            
+        elif order.data == self.StepOfIntersection.exit.value:           
+            rospy.loginfo("Now finished")
+            rospy.sleep(2)
+            msg_pub_intersection_return.data = self.StepOfIntersection.exit.value
+
+        self.pub_intersection_return.publish(msg_pub_intersection_return)
+        rospy.sleep(3)
+
+    def main(self):
+        rospy.spin()
+
+if __name__ == '__main__':
+    rospy.init_node('detect_intersection')
+    node = DetectIntersection()
+    node.main()

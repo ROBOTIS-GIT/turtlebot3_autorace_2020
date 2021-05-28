@@ -1,0 +1,185 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+################################################################################
+# Copyright 2018 ROBOTIS CO., LTD.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+################################################################################
+
+# Authors: Leon Jung, [AuTURBO] Kihoon Kim (https://github.com/auturbo), Gilbert, Ashe Kim
+
+import rospy, roslaunch
+import subprocess
+import os
+import sys
+from enum import Enum
+from std_msgs.msg import UInt8, Float64
+ 
+class CoreNodeController():
+    def __init__(self):
+        self.ros_package_path = os.path.dirname(os.path.realpath(__file__))
+        self.ros_package_path = self.ros_package_path.replace('turtlebot3_autorace_core/nodes', '')
+
+        # subscribes : status returned
+        self.sub_mode_control = rospy.Subscriber('/core/decided_mode', UInt8, self.cbReceiveMode, queue_size=1)
+  
+        # publishes orders
+        self.pub_traffic_light_order = rospy.Publisher('/detect/traffic_light_order', UInt8, queue_size=1)
+        self.pub_mode_return = rospy.Publisher('/core/returned_mode', UInt8, queue_size=1)
+        self.pub_timer_start = rospy.Publisher('/detect/timer/start', Float64, queue_size= 1)
+
+        self.CurrentMode = Enum('CurrentMode', 'idle lane_following traffic_light')
+        self.current_mode = self.CurrentMode.idle.value
+
+        self.StepOfTrafficLight = Enum('StepOfTrafficLight', 'searching_traffic_light in_traffic_light')    
+        self.current_step_traffic_light = self.StepOfTrafficLight.searching_traffic_light.value
+    
+        self.Launcher = Enum('Launcher', 'launch_camera_ex_calib launch_detect_lane launch_detect_traffic_light launch_driving_lane')
+        self.uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+        
+        self.launch_camera_launched = False
+        self.launch_detect_lane_launched = False    
+        self.launch_detect_traffic_light_launched = False
+        self.launch_driving_lane_launched = False
+
+        self.is_triggered = False
+
+        loop_rate = rospy.Rate(10) # 10hz
+        while not rospy.is_shutdown():
+            if self.is_triggered == True:
+                self.fnControlNode()
+            
+            loop_rate.sleep()
+
+    def cbReceiveMode(self, mode_msg):
+        rospy.loginfo("starts the progress with %d", mode_msg.data)
+        
+        self.current_mode = mode_msg.data
+        self.is_triggered = True
+
+  
+    def fnControlNode(self): 
+        # lane_following
+        if self.current_mode == self.CurrentMode.lane_following.value:
+            rospy.loginfo("New trigger for lane_following")
+
+            self.fnLaunch(self.Launcher.launch_camera_ex_calib.value, True)
+
+            self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
+            self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
+
+            self.fnLaunch(self.Launcher.launch_driving_lane.value, True)
+
+        # traffic_light
+        elif self.current_mode == self.CurrentMode.traffic_light.value:
+            rospy.loginfo("New trigger for traffic_light")
+            msg_pub_traffic_light_order = UInt8()
+
+            if self.current_step_traffic_light == self.StepOfTrafficLight.searching_traffic_light.value:
+                rospy.loginfo("Current step : searching_traffic_light")
+                rospy.loginfo("Go to next step : in_traffic_light")
+
+                msg_pub_traffic_light_order.data = self.StepOfTrafficLight.in_traffic_light.value
+                
+                self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
+                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, True)
+                
+                self.fnLaunch(self.Launcher.launch_driving_lane.value, False)
+
+            elif self.current_step_traffic_light == self.StepOfTrafficLight.in_traffic_light.value:
+                rospy.loginfo("Current step : in_traffic_light")
+                rospy.loginfo("Go to next step : pass_traffic_light")
+
+                self.fnLaunch(self.Launcher.launch_detect_lane.value, True)
+                self.fnLaunch(self.Launcher.launch_detect_traffic_light.value, False)
+
+                self.fnLaunch(self.Launcher.launch_driving_lane.value, True)
+
+            rospy.sleep(2)
+
+            self.pub_traffic_light_order.publish(msg_pub_traffic_light_order)
+
+   
+    def fnLaunch(self, launch_num, is_start):
+        if launch_num == self.Launcher.launch_camera_ex_calib.value:
+            if is_start == True:
+                if self.launch_camera_launched == False:
+                    self.launch_camera = roslaunch.scriptapi.ROSLaunch()
+                    self.launch_camera = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_camera/launch/extrinsic_camera_calibration.launch"])
+                    self.launch_camera_launched = True
+                    self.launch_camera.start()
+                else:
+                    pass
+            else:
+                if self.launch_camera_launched == True:
+                    self.launch_camera_launched = False
+                    self.launch_camera.shutdown()
+                else:
+                    pass   
+                           
+        elif launch_num == self.Launcher.launch_detect_lane.value:
+            if is_start == True:
+                if self.launch_detect_lane_launched == False:
+                    self.launch_detect_lane = roslaunch.scriptapi.ROSLaunch()
+                    self.launch_detect_lane = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_detect/launch/detect_lane.launch"])
+                    self.launch_detect_lane_launched = True
+                    self.launch_detect_lane.start()
+                else:
+                    pass
+            else:
+                if self.launch_detect_lane_launched == True:
+                    self.launch_detect_lane_launched = False
+                    self.launch_detect_lane.shutdown()
+                else:
+                    pass  
+
+        elif launch_num == self.Launcher.launch_detect_traffic_light.value:
+            if is_start == True:
+                if self.launch_detect_traffic_light_launched == False:
+                    self.launch_detect_traffic_light = roslaunch.scriptapi.ROSLaunch()
+                    self.launch_detect_traffic_light = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_detect/launch/detect_traffic_light.launch"])     
+                    self.launch_detect_traffic_light_launched = True
+                    self.launch_detect_traffic_light.start()
+                else:
+                    pass
+            else:
+                if self.launch_detect_traffic_light_launched == True:
+                    self.launch_detect_traffic_light_launched = False
+                    self.launch_detect_traffic_light.shutdown()
+                else:
+                    pass    
+                    
+        elif launch_num == self.Launcher.launch_driving_lane.value:
+            if is_start == True:
+                if self.launch_driving_lane_launched == False:
+                    self.launch_driving_lane = roslaunch.scriptapi.ROSLaunch()
+                    self.launch_driving_lane = roslaunch.parent.ROSLaunchParent(self.uuid, [self.ros_package_path + "turtlebot3_autorace_driving/launch/turtlebot3_autorace_control_lane.launch"])
+                    self.launch_driving_lane_launched = True
+                    self.launch_driving_lane.start()
+                else:
+                    pass
+            else:
+                if self.launch_driving_lane_launched == True:
+                    self.launch_driving_lane_launched = False
+                    self.launch_driving_lane.shutdown()
+                else:
+                    pass                  
+  
+    def main(self):
+        rospy.spin()
+
+if __name__ == '__main__':
+    rospy.init_node('core_node_controller')
+    node = CoreNodeController()
+    node.main()

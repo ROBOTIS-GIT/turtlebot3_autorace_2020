@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="turtlebot3_autorace_detect" type="detect_intersection" name="detect_intersection" output="screen">
+  </node>
+</launch>

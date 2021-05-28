@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>turtlebot3_autorace_2020</name>
+  <name>turtlebot3_autorace_detect</name>
   <version>1.0.0</version>
   <description>
-    TurtleBot3 AutoRace 2020 ROS 1 packages (meta package)
+    AutoRace ROS packages for feature detection with TurtleBot3 Auto
   </description>
   <license>Apache 2.0</license>
   <author email="ashekim@robotis.com">Ashe</author>
@@ -15,10 +15,17 @@
   <url type="repository">https://github.com/ROBOTIS-GIT/turtlebot3_autorace_2020</url>
   <url type="bugtracker">https://github.com/ROBOTIS-GIT/turtlebot3_autorace_2020/issues</url>
   <buildtool_depend>catkin</buildtool_depend>
-  <exec_depend>turtlebot3_autorace_camera</exec_depend>
-  <exec_depend>turtlebot3_autorace_core</exec_depend>
-  <exec_depend>turtlebot3_autorace_detect</exec_depend>
-  <exec_depend>turtlebot3_autorace_driving</exec_depend>
-  <exec_depend>turtlebot3_autorace_msgs</exec_depend>
-  <export><metapackage/></export>
+  <depend>dynamic_reconfigure</depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>move_base_msgs</exec_depend>
+  <exec_depend>tf</exec_depend>
+  <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>python-opencv</exec_depend>
+  <exec_depend>python-numpy</exec_depend>
+  <exec_depend>python-enum34</exec_depend>
 </package>
+

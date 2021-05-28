@@ -1,0 +1,10 @@
+<launch>
+  <!-- traffic sign detection -->
+  <arg name="mission" default="intersection" doc="mission type [intersection, construction, parking, level_crossing, tunnel]"/>
+    <node pkg="turtlebot3_autorace_detect" type="detect_$(arg mission)_sign" name="detect_$(arg mission)_sign" output="screen">
+      <remap from="/detect/image_input" to="/camera/image_compensated" />
+      <remap from="/detect/image_input/compressed" to="/camera/image_compensated/compressed" />
+      <remap from="/detect/image_output" to="/detect/image_traffic_sign" />
+      <remap from="/detect/image_output/compressed" to="/detect/image_traffic_sign/compressed" />    
+    </node>
+</launch>
