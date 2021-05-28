@@ -1,7 +1,7 @@
 ################################################################################
 # Set minimum required version of cmake, project name and compile options
 ################################################################################
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0.2)
 project(turtlebot3_autorace_camera)
 
 ################################################################################
@@ -48,7 +48,7 @@ catkin_install_python(PROGRAMS
  	DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(DIRECTORY calibration cfg data launch
+install(DIRECTORY calibration cfg launch
 	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
