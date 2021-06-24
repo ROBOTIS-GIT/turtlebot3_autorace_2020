@@ -43,9 +43,9 @@ class ImagePublish():
                 cv2.imwrite('test_py.jpg', frame)
                 img = cv2.imread('test_py.jpg', cv2.IMREAD_COLOR)
                 # print(img)
-                image_message = bridge.cv2_to_imgmsg(img, "bgr8")
-                image_pub = rospy.Publisher("/camera/image",Image, queue_size = 1)
-                image_pub.publish(image_message)
+                # image_message = bridge.cv2_to_imgmsg(img, "bgr8")
+                # image_pub = rospy.Publisher("/camera/image",Image, queue_size = 1)
+                # image_pub.publish(image_message)
            
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
