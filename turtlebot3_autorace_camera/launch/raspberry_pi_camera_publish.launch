@@ -1,0 +1,4 @@
+<launch>
+  <!-- run pi camera -->
+  <node pkg="turtlebot3_autorace_camera" type="image_publish" name="image_publish" output="screen"/>
+</launch>
