@@ -2,8 +2,8 @@
   <!-- run pi camera -->
   <node pkg="turtlebot3_autorace_camera" type="image_publish" name="image_publish" output="screen"/>
 
-  <node pkg="image_publisher" type="image_publisher" name="image_publisher"
-        args="test_py.jpg" >
+  <node pkg="image_publisher" type="image_publisher" name="image_publisher" >
+    <param name="filename" value="test_py.jpg" />
     <param name="flip_horizontal" value="false" />
     <param name="flip_vertical" value="false" />
     <param name="frame_id" value="camera" />
