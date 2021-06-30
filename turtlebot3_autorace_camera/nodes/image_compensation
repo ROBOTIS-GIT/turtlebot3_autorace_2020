@@ -22,8 +22,9 @@
 import rospy
 import numpy as np
 import cv2
+import message_filters
 from cv_bridge import CvBridge
-from sensor_msgs.msg import Image, CompressedImage
+from sensor_msgs.msg import Image, CompressedImage, CameraInfo
 from dynamic_reconfigure.server import Server
 from turtlebot3_autorace_camera.cfg import ImageCompensationParamsConfig
 
@@ -38,14 +39,18 @@ class ImageCompensation():
 
         self.sub_image_type = "compressed"  # "compressed" / "raw"
         self.pub_image_type = "raw"  # "compressed" / "raw"
-
+        self.sub_camera_info = message_filters.Subscriber('/camera/camera_info', CameraInfo)
 
         if self.sub_image_type == "compressed":
             # subscribes compressed image 
-            self.sub_image_original = rospy.Subscriber('/camera/image_input/compressed', CompressedImage, self.cbImageCompensation, queue_size = 1)
+            self.sub_image_original = message_filters.Subscriber('/camera/image_input/compressed', CompressedImage)
+            ts = message_filters.TimeSynchronizer([sub_image_original, sub_camera_info], 10)
+            ts.registerCallback(self.cbImageCompensation)
         elif self.sub_image_type == "raw":
             # subscribes raw image 
-            self.sub_image_original = rospy.Subscriber('/camera/image_input', Image, self.cbImageCompensation, queue_size = 1)
+            self.sub_image_original = message_filters.Subscriber('/camera/image_input', Image)
+            ts = message_filters.TimeSynchronizer([sub_image_original, sub_camera_info], 10)
+            ts.registerCallback(self.cbImageCompensation)
 
         if self.pub_image_type == "compressed":
             # publishes compensated image in compressed type 
