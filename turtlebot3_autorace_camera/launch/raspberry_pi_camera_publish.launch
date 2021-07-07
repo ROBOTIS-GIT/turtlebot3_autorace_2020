@@ -4,7 +4,7 @@
     <param name="image_width" value="320"/>
     <param name="image_height" value="240"/>
     <param name="rate" value="30"/>
-    <param name="frame_id" value="camera"/>
+    <param name="frame_id" value="camera"/>    
     <remap from="/cv_camera/set_camera_info" to="/camera/set_camera_info" />
     <remap from="/cv_camera/camera_info" to="/camera/camera_info" />
     <remap from="/cv_camera/image_raw" to="/camera/image" />
