@@ -48,7 +48,10 @@ catkin_install_python(PROGRAMS
  	DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(DIRECTORY calibration cfg launch
+install(DIRECTORY 
+  calibration 
+  cfg 
+  launch
 	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
