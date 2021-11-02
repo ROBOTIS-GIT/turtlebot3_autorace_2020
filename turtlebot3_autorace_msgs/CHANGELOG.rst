@@ -2,6 +2,11 @@
 Changelog for package turtlebot3_autorace_2020
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.1 (2021-11-02)
+------------------
+* Modified opencv packages (#6)
+* Contributors: Ashe Kim, Will Son
+
 1.1.0 (2021-05-28)
 ------------------
 * Noetic package release
