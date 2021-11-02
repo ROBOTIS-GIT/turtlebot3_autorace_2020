@@ -29,7 +29,7 @@ from turtlebot3_autorace_camera.cfg import ImageCompensationParamsConfig
 
 class ImageCompensation():
     def __init__(self):
-        self.clip_hist_percent = rospy.get_param("/camera/extrinsic_camera_calibration/clip_hist_percent", 1.)
+        self.clip_hist_percent = rospy.get_param("~camera/extrinsic_camera_calibration/clip_hist_percent", 1.)
 
         self.is_calibration_mode = rospy.get_param("~is_extrinsic_camera_calibration_mode", False)
         if self.is_calibration_mode == True:
