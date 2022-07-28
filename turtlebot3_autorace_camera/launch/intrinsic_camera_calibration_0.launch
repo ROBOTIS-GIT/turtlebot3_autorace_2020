@@ -1,0 +1,16 @@
+<launch>
+  <group>
+    <!-- image transport from compressed to raw -->
+    <node pkg="image_transport" type="republish" name="republish_0" args="compressed">
+      <remap from="in"  to="/tb3_0/camera/rgb/image_raw" />
+      <remap from="out"   to="/tb3_0/camera/image"/>
+    </node>
+    <node pkg="topic_tools" type="relay" name="relay_camera_info_0" args="/tb3_0/camera/rgb/camera_info /tb3_0/camera/camera_info"/>
+  </group>
+
+  <!-- image rectification -->
+  <node ns="tb3_0/camera" pkg="image_proc" type="image_proc" name="image_proc_1" args="_approximate_sync:=true" output="screen">
+    <remap from="image_raw" to="image" />
+    <param name="queue_size" value="20" />
+  </node>
+</launch>

@@ -1,0 +1,19 @@
+<launch>
+  <!-- launch extrinsic_camera_calibration.launch before launch this file -->
+  <arg name="mode" default="action" doc="mode type [calibration, action]"/>
+
+  <!-- lane detection -->
+  <node pkg="turtlebot3_autorace_detect" type="detect_lane_1" name="detect_lane_1" output="screen">
+    <rosparam command="load" file="$(find turtlebot3_autorace_detect)/param/lane/lane.yaml" />
+    <param if="$(eval mode == 'calibration')" name="/is_detection_calibration_mode" value="True"/>
+    <param if="$(eval mode == 'action')" name="/is_detection_calibration_mode" value="False"/>    
+    <remap from="/detect/tb3_1/image_input" to="/tb3_1/camera/image_projected_compensated" />
+    <remap from="/detect/tb3_1/image_input/compressed" to="/tb3_1/camera/image_projected_compensated/compressed" />
+    <remap from="/detect/tb3_1/image_output" to="/detect/tb3_1/image_lane" />
+    <remap from="/detect/tb3_1/image_output/compressed" to="/detect/tb3_1/image_lane/compressed" />
+    <remap from="/detect/tb3_1/image_output_sub1" to="/detect/tb3_1/image_white_lane_marker" />
+    <remap from="/detect/tb3_1/image_output_sub1/compressed" to="/detect/tb3_1/image_white_lane_marker/compressed" />
+    <remap from="/detect/tb3_1/image_output_sub2" to="/detect/tb3_1/image_yellow_lane_marker" />
+    <remap from="/detect/tb3_1/image_output_sub2/compressed" to="/detect/tb3_1/image_yellow_lane_marker/compressed" />    
+  </node>
+</launch>

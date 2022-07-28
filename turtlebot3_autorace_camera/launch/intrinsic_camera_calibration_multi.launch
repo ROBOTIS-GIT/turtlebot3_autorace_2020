@@ -1,0 +1,26 @@
+<launch>
+  <arg name="mode" default="action" doc="mode type [calibration, action]"/>
+  <arg name="first_tb3"  default="tb3_0"/>
+  <arg name="second_tb3" default="tb3_1"/>
+
+  <group ns= "$(arg first_tb3)">
+    <!-- image transport from compressed to raw -->
+    <node pkg="image_transport" type="republish" name="republish" args="compressed">
+      <remap from="in"  to="/$(arg first_tb3)/camera/rgb/image_raw" />
+      <remap from="out"   to="/$(arg first_tb3)/camera/image"/>
+    </node>
+    <node pkg="topic_tools" type="relay" name="relay_camera_info" args="/$(arg first_tb3)/camera/rgb/camera_info /$(arg first_tb3)/camera/camera_info"/>
+  </group>
+
+
+  <group ns= "$(arg second_tb3)">
+    <!-- image transport from compressed to raw -->
+    <node pkg="image_transport" type="republish" name="republish" args="compressed">
+      <remap from="in"  to="/$(arg second_tb3)/camera/rgb/image_raw" />
+      <remap from="out"   to="/$(arg second_tb3)/camera/image"/>
+    </node>
+    <node pkg="topic_tools" type="relay" name="relay_camera_info" args="/$(arg second_tb3)/camera/rgb/camera_info /$(arg second_tb3)/camera/camera_info"/>
+  </group>
+
+</launch>
+

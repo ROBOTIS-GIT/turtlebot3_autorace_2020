@@ -26,9 +26,9 @@ from geometry_msgs.msg import Twist
 
 class ControlLane():
     def __init__(self):
-        self.sub_lane = rospy.Subscriber('/control/lane', Float64, self.cbFollowLane, queue_size = 1)
-        self.sub_max_vel = rospy.Subscriber('/control/max_vel', Float64, self.cbGetMaxVel, queue_size = 1)
-        self.pub_cmd_vel = rospy.Publisher('/control/cmd_vel', Twist, queue_size = 1)
+        self.sub_lane = rospy.Subscriber('/control/tb3_0/lane', Float64, self.cbFollowLane, queue_size = 1)
+        self.sub_max_vel = rospy.Subscriber('/control/tb3_0/max_vel', Float64, self.cbGetMaxVel, queue_size = 1)
+        self.pub_cmd_vel = rospy.Publisher('/control/tb3_0/cmd_vel', Twist, queue_size = 1)
 
         self.lastError = 0
         self.MAX_VEL = 0.1
@@ -44,14 +44,14 @@ class ControlLane():
         error = center - 500
 
         Kp = 0.0025
-        Kd = 0.006
+        Kd = 0.007
 
         angular_z = Kp * error + Kd * (error - self.lastError)
         self.lastError = error
         
         twist = Twist()
         # twist.linear.x = 0.05        
-        twist.linear.x = min(self.MAX_VEL * ((1 - abs(error) / 500) ** 2.2), 0.05)
+        twist.linear.x = min(self.MAX_VEL * ((1 - abs(error) / 500) ** 2.2), 0.1)
         twist.linear.y = 0
         twist.linear.z = 0
         twist.angular.x = 0
@@ -60,7 +60,7 @@ class ControlLane():
         self.pub_cmd_vel.publish(twist)
 
     def fnShutDown(self):
-        rospy.loginfo("Shutting down. cmd_vel will be 0")
+        rospy.loginfo("Shutting down. tb3_0/cmd_vel will be 0")
 
         twist = Twist()
         twist.linear.x = 0
@@ -75,6 +75,6 @@ class ControlLane():
         rospy.spin()
 
 if __name__ == '__main__':
-    rospy.init_node('control_lane')
+    rospy.init_node('control_lane_0')
     node = ControlLane()
     node.main()

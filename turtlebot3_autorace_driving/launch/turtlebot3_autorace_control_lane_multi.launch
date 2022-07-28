@@ -1,0 +1,21 @@
+<launch>
+  <!-- launch turtlebot3_autorace_detect_lane.launch before launch this file -->
+  <arg name="first_tb3"  default="tb3_0"/>
+  <arg name="second_tb3" default="tb3_1"/>
+  
+  <group ns= "$(arg first_tb3)">
+    <!-- lane control -->
+    <node pkg="turtlebot3_autorace_driving" type="control_lane" name="control_lane" output="screen">
+      <remap from="/control/lane" to="/$(arg first_tb3)/detect/lane" />
+      <remap from="/control/cmd_vel" to="/$(arg first_tb3)/cmd_vel" />
+    </node>
+  </group>
+  
+    <group ns= "$(arg second_tb3)">
+    <!-- lane control -->
+    <node pkg="turtlebot3_autorace_driving" type="control_lane" name="control_lane" output="screen">
+      <remap from="/control/lane" to="/$(arg second_tb3)/detect/lane" />
+      <remap from="/control/cmd_vel" to="/$(arg second_tb3)/cmd_vel" />
+    </node>
+  </group>
+</launch>

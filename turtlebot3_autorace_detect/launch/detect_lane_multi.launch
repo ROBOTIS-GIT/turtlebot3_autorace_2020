@@ -1,0 +1,44 @@
+<launch>
+  <!-- launch extrinsic_camera_calibration.launch before launch this file -->
+  <arg name="mode" default="action" doc="mode type [calibration, action]"/>
+  <arg name="first_tb3"  default="tb3_0"/>
+  <arg name="second_tb3" default="tb3_1"/>
+
+  <group ns= "$(arg first_tb3)">
+    <!-- lane detection -->
+    <node pkg="turtlebot3_autorace_detect" type="detect_lane" name="detect_lane" output="screen">
+      <rosparam command="load" file="$(find turtlebot3_autorace_detect)/param/lane/lane.yaml" />
+      <param if="$(eval mode == 'calibration')" name="/is_detection_calibration_mode" value="True"/>
+      <param if="$(eval mode == 'action')" name="/is_detection_calibration_mode" value="False"/>    
+      <remap from="/detect/image_input" to="/$(arg first_tb3)/camera/image_projected_compensated" />
+      <remap from="/detect/image_input/compressed" to="/$(arg first_tb3)/camera/image_projected_compensated/compressed" />
+      <remap from="/detect/image_output" to="/$(arg first_tb3)/detect/image_lane" />
+      <remap from="/detect/image_output/compressed" to="/$(arg first_tb3)/detect/image_lane/compressed" />
+      <remap from="/detect/image_output_sub1" to="/$(arg first_tb3)/detect/image_white_lane_marker" />
+      <remap from="/detect/image_output_sub1/compressed" to="/$(arg first_tb3)/detect/image_white_lane_marker/compressed" />
+      <remap from="/detect/image_output_sub2" to="/$(arg first_tb3)/detect/image_yellow_lane_marker" />
+      <remap from="/detect/image_output_sub2/compressed" to="/$(arg first_tb3)/detect/image_yellow_lane_marker/compressed" />    
+    </node>
+  </group>
+  
+  <group ns= "$(arg second_tb3)">
+    <!-- lane detection -->
+    <node pkg="turtlebot3_autorace_detect" type="detect_lane" name="detect_lane" output="screen">
+      <rosparam command="load" file="$(find turtlebot3_autorace_detect)/param/lane/lane.yaml" />
+      <param if="$(eval mode == 'calibration')" name="/is_detection_calibration_mode" value="True"/>
+      <param if="$(eval mode == 'action')" name="/is_detection_calibration_mode" value="False"/>    
+      <remap from="/detect/image_input" to="/$(arg second_tb3)/camera/image_projected_compensated" />
+      <remap from="/detect/image_input/compressed" to="/$(arg second_tb3)/camera/image_projected_compensated/compressed" />
+      <remap from="/detect/image_output" to="/$(arg second_tb3)/detect/image_lane" />
+      <remap from="/detect/image_output/compressed" to="/$(arg second_tb3)/detect/image_lane/compressed" />
+      <remap from="/detect/image_output_sub1" to="/$(arg second_tb3)/detect/image_white_lane_marker" />
+      <remap from="/detect/image_output_sub1/compressed" to="/$(arg second_tb3)/detect/image_white_lane_marker/compressed" />
+      <remap from="/detect/image_output_sub2" to="/$(arg second_tb3)/detect/image_yellow_lane_marker" />
+      <remap from="/detect/image_output_sub2/compressed" to="/$(arg second_tb3)/detect/image_yellow_lane_marker/compressed" />    
+    </node>
+  </group>
+  
+  
+</launch>
+
+

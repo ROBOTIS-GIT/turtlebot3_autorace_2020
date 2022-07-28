@@ -1,0 +1,42 @@
+<launch>
+  <!-- launch turtlebot3_autorace_camera_calibration.launch in the raspberry pi before launch this file -->
+
+  <arg name="mode" default="action" doc="mode type [calibration, action]"/>
+
+  <group ns="tb3_0/camera">
+    <!-- image brightness & contrast compensation of ground-projected image -->
+    <node pkg="turtlebot3_autorace_camera" type="image_compensation_0" name="image_compensation_0" output="screen">
+      <rosparam command="load" file="$(find turtlebot3_autorace_camera)/calibration/extrinsic_calibration/compensation.yaml" />
+      <param if="$(eval mode == 'calibration')" name="/is_extrinsic_camera_calibration_mode" value="True"/>
+      <param if="$(eval mode == 'action')" name="/is_extrinsic_camera_calibration_mode" value="False"/>
+      <remap from="/tb3_0/camera/image_input" to="/tb3_0/camera/image_rect_color" />
+      <remap from="/tb3_0/camera/image_input/compressed" to="/tb3_0/camera/image_rect_color/compressed" />
+      <remap from="/tb3_0/camera/image_output" to="/tb3_0/camera/image_compensated" />
+      <remap from="/tb3_0/camera/image_output/compressed" to="/tb3_0/camera/image_compensated/compressed" />
+    </node>
+
+    <!-- image ground projection -->
+    <node pkg="turtlebot3_autorace_camera" type="image_projection_0" name="image_projection_0" output="screen">
+      <rosparam command="load" file="$(find turtlebot3_autorace_camera)/calibration/extrinsic_calibration/projection.yaml" />
+      <param if="$(eval mode == 'calibration')" name="/is_extrinsic_camera_calibration_mode" value="True"/>
+      <param if="$(eval mode == 'action')" name="/is_extrinsic_camera_calibration_mode" value="False"/>    
+      <remap from="/tb3_0/camera/image_input" to="/tb3_0/camera/image_rect_color" />
+      <remap from="/tb3_0/camera/image_input/compressed" to="/tb3_0/camera/image_rect_color/compressed" />
+      <remap from="/tb3_0/camera/image_output" to="/tb3_0/camera/image_projected" />
+      <remap from="/tb3_0/camera/image_output/compressed" to="/tb3_0/camera/image_projected/compressed" />
+      <remap from="/tb3_0/camera/image_calib" to="/tb3_0/camera/image_extrinsic_calib" />
+      <remap from="/tb3_0/camera/image_calib/compressed" to="/tb3_0/camera/image_extrinsic_calib/compressed" />
+    </node>
+
+    <!-- image brightness & contrast compensation of ground-projected image -->
+    <node pkg="turtlebot3_autorace_camera" type="image_compensation_0" name="image_compensation_projection_0" output="screen">
+      <rosparam command="load" file="$(find turtlebot3_autorace_camera)/calibration/extrinsic_calibration/compensation.yaml" />
+      <param if="$(eval mode == 'calibration')" name="/is_extrinsic_camera_calibration_mode" value="True"/>
+      <param if="$(eval mode == 'action')" name="/is_extrinsic_camera_calibration_mode" value="False"/>    
+      <remap from="/tb3_0/camera/image_input" to="/tb3_0/camera/image_projected" />
+      <remap from="/tb3_0/camera/image_input/compressed" to="/tb3_0/camera/image_projected/compressed" />
+      <remap from="/tb3_0/camera/image_output" to="/tb3_0/camera/image_projected_compensated" />
+      <remap from="/tb3_0/camera/image_output/compressed" to="/tb3_0/camera/image_projected_compensated/compressed" />
+    </node>
+  </group>
+</launch>

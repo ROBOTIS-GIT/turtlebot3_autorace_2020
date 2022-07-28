@@ -44,7 +44,11 @@ catkin_package(
 ################################################################################
 catkin_install_python(PROGRAMS
   nodes/image_compensation
+  nodes/image_compensation_0
+  nodes/image_compensation_1
   nodes/image_projection
+  nodes/image_projection_0
+  nodes/image_projection_1
  	DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
