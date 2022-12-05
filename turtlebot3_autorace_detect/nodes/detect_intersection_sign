@@ -228,15 +228,15 @@ class DetectSign():
                             matchesMask = matches_right, # draw only inliers
                             flags = 2)
 
-            fianl_right = cv2.drawMatches(cv_image_input,kp1,self.img_right,self.kp_right,good_right,None,**draw_params_right)
+            final_right = cv2.drawMatches(cv_image_input,kp1,self.img_right,self.kp_right,good_right,None,**draw_params_right)
 
             if self.pub_image_type == "compressed":
                 # publishes traffic sign image in compressed type
-                self.pub_image_traffic_sign.publish(self.cvBridge.cv2_to_compressed_imgmsg(fianl_right, "jpg"))
+                self.pub_image_traffic_sign.publish(self.cvBridge.cv2_to_compressed_imgmsg(final_right, "jpg"))
 
             elif self.pub_image_type == "raw":
                 # publishes traffic sign image in raw type
-                self.pub_image_traffic_sign.publish(self.cvBridge.cv2_to_imgmsg(fianl_right, "bgr8"))
+                self.pub_image_traffic_sign.publish(self.cvBridge.cv2_to_imgmsg(final_right, "bgr8"))
 
     def main(self):
         rospy.spin()
